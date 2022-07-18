@@ -1,3 +1,36 @@
+$primary: #326dee;
+$secondary: #1ac886;
+$error: #d32752;
+$info: #f6c31c;
+
+$grid-width: 320px;
+$grid-height: 385px;
+$grid-gap: 5px;
+
+$key-gap: 2px;
+$key-width: 50px;
+$key-height: 50px;
+$keyboard-width: calc($key-width * 10 + $key-gap * 2 * 11); // 544
+
+$margin-base: 32px;
+
+$colors: (
+  'primary': $primary,
+  'secondary': $secondary,
+  'error': $error,
+  'info': $info,
+  'blue': #1919e6,
+  'red': #e61919,
+  'yellow': #e6e619,
+  'green': #19e635,
+  'orange': #ffa600,
+  'purple': #9900ff,
+  'light-grey': hsl(0, 0%, 97%),
+  'grey': hsl(0, 0%, 75%),
+  'black': black,
+  'white': white,
+);
+
 *,
 *::before,
 *::after {
@@ -6,6 +39,56 @@
   box-sizing: border-box;
 }
 
-#game-title {
+.game-title {
   text-align: center;
+  margin-top: $margin-base;
+  margin-bottom: $margin-base;
+}
+
+.grid-container {
+  width: $grid-width;
+  height: $grid-height;
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: $grid-gap;
+  margin-inline: auto;
+}
+
+.tile {
+  border: 1px solid map-get($map: $colors, $key: 'grey');
+  background-color: map-get($map: $colors, $key: 'light-grey');
+  border-radius: 6px;
+}
+
+.keyboard-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  width: $keyboard-width;
+  margin-inline: auto;
+  margin-top: $margin-base;
+}
+
+.key-tile {
+  height: $key-height;
+  width: $key-width;
+  border: 1px solid map-get($map: $colors, $key: 'grey');
+  background-color: map-get($map: $colors, $key: 'light-grey');
+  border-radius: 6px;
+  margin: $key-gap;
+  cursor: pointer;
+
+  font-size: calc($key-height * 0.5);
+}
+
+[data-id='key-Backspace'],
+[data-id='key-Enter'] {
+  width: calc($key-width * 1.54);
+}
+
+@for $i from 11 through 19 {
+  .key-tile:nth-child(#{$i}) {
+    width: calc($key-width * 1.12);
+  }
 }
