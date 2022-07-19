@@ -1,7 +1,7 @@
 @use 'sass:math';
 
-$primary: #326dee;
-$secondary: #1ac886;
+$primary: #eed232;
+$secondary: #62c81a;
 $error: #d32752;
 $info: #f6c31c;
 
@@ -28,6 +28,7 @@ $colors: (
   'purple': #9900ff,
   'light-grey': hsl(0, 0%, 97%),
   'grey': hsl(0, 0%, 75%),
+  'dark-grey': hsl(0, 0%, 55%),
   'black': black,
   'white': white,
 );
@@ -95,4 +96,16 @@ $colors: (
   .key-tile:nth-child(#{$i}) {
     width: calc($key-width * 1.12);
   }
+}
+
+.green {
+  background-color: map-get($map: $colors, $key: 'secondary');
+}
+
+.amber {
+  background-color: map-get($map: $colors, $key: 'primary');
+}
+
+.absent {
+  background-color: map-get($map: $colors, $key: 'grey');
 }

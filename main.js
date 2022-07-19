@@ -20,33 +20,72 @@ const tileGridArray = Array.from(Array(tileGridHeight), () =>
   new Array(tileGridWidth).fill('')
 );
 
-function getWord() {
-  return wordList[Math.floor(Math.random() * wordList.length)];
+function getWord(words) {
+  return words[Math.floor(Math.random() * wordList.length)];
 }
 
 // Get a word from the wordList
-const answer = getWord();
+const answer = getWord(wordList);
 console.log(answer);
 
-function showCorrectLetters() {
-  console.log('showing correct letters');
-  // const guess = tileGridArray[currentRow];
-  // check for letter position in correct position
+function showCorrectLetters(guessArray) {
+  // keep track of letter count in answer, queen => {q: 1, u: 1, e: 2, n: 1}
+  const letterCount = [...answer].reduce((result, letter) => {
+    const currentResult = { ...result };
+    if (letter in result) {
+      currentResult[letter] += 1;
+      return currentResult;
+    }
+    currentResult[letter] = 1;
+    return currentResult;
+  }, {});
+
+  // 1st pass
+  // check for letter in correct position only
+  guessArray.forEach((letter, index) => {
+    const tile = document.querySelector(
+      `[data-id="tile-${currentRow}-${index}"]`
+    );
+    const letterL = letter.toLowerCase();
+    if (letterL === answer[index]) {
+      tile.classList.add('green'); // change tile color
+      letterCount[letterL] -= 1; // deduct from letter count
+    }
+  });
+
+  // 2nd pass
+  // check for letter in any position
+  guessArray.forEach((letter, index) => {
+    const tile = document.querySelector(
+      `[data-id="tile-${currentRow}-${index}"]`
+    );
+    const letterL = letter.toLowerCase();
+    if (letterL in letterCount && letterCount[letterL] > 0) {
+      tile.classList.add('amber');
+      letterCount[letterL] -= 1;
+      return;
+    }
+    if (!Array.from(tile.classList).includes('green')) {
+      tile.classList.add('absent');
+    }
+  });
 }
 
 function checkGuess() {
   if (isGameOver) return;
-  const guess = tileGridArray[currentRow].join('').toLowerCase();
+  const guessArray = tileGridArray[currentRow];
+  const guess = guessArray.join('').toLowerCase();
   console.log(guess);
   // Check if word is valid
-  if (!allWords.includes(guess)) {
-    console.log('Your guess is not a valid word');
-    return;
-  }
-  showCorrectLetters(guess);
+  // if (!allWords.includes(guess)) {
+  //   console.log('Your guess is not a valid word');
+  //   return;
+  // }
+  showCorrectLetters(guessArray);
   // Correct answer
   if (guess === answer) {
     console.log('You win game over');
+    isGameOver = true;
     return;
   }
   // Next guess
