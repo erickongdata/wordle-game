@@ -98,11 +98,11 @@ $colors: (
   }
 }
 
-.green {
+.correct {
   background-color: map-get($map: $colors, $key: 'secondary');
 }
 
-.amber {
+.present {
   background-color: map-get($map: $colors, $key: 'primary');
 }
 

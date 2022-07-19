@@ -28,8 +28,23 @@ function getWord(words) {
 const answer = getWord(wordList);
 console.log(answer);
 
+function showKeyboardColor(key, state) {
+  if (state === 'correct') {
+    key.classList.remove('absent', 'present');
+    key.classList.add('correct');
+    return;
+  }
+  if (state === 'present') {
+    key.classList.add('present');
+    return;
+  }
+  if (state === 'absent') {
+    key.classList.add('absent');
+  }
+}
+
 function showCorrectLetters(guessArray) {
-  // keep track of letter count in answer, queen => {q: 1, u: 1, e: 2, n: 1}
+  // keep track of letter count in answer, e.g. queen => {q: 1, u: 1, e: 2, n: 1}
   const letterCount = [...answer].reduce((result, letter) => {
     const currentResult = { ...result };
     if (letter in result) {
@@ -41,14 +56,17 @@ function showCorrectLetters(guessArray) {
   }, {});
 
   // 1st pass
+  // Compare guessArray ['g', 'u', 'e', 's', 's'] with answer string 'queen'
   // check for letter in correct position only
   guessArray.forEach((letter, index) => {
     const tile = document.querySelector(
       `[data-id="tile-${currentRow}-${index}"]`
     );
+    const key = document.querySelector(`[data-key="${letter}"]`);
     const letterL = letter.toLowerCase();
     if (letterL === answer[index]) {
-      tile.classList.add('green'); // change tile color
+      tile.classList.add('correct'); // change tile color
+      showKeyboardColor(key, 'correct');
       letterCount[letterL] -= 1; // deduct from letter count
     }
   });
@@ -59,14 +77,19 @@ function showCorrectLetters(guessArray) {
     const tile = document.querySelector(
       `[data-id="tile-${currentRow}-${index}"]`
     );
+    const key = document.querySelector(`[data-key="${letter}"]`);
     const letterL = letter.toLowerCase();
     if (letterL in letterCount && letterCount[letterL] > 0) {
-      tile.classList.add('amber');
+      tile.classList.add('present');
+      showKeyboardColor(key, 'present');
       letterCount[letterL] -= 1;
       return;
     }
-    if (!tile.classList.contains('green')) {
+    if (!tile.classList.contains('correct')) {
       tile.classList.add('absent');
+      if (!key.classList.contains('correct', 'present')) {
+        showKeyboardColor(key, 'absent');
+      }
     }
   });
 }
