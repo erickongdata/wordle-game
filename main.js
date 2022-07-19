@@ -30,6 +30,8 @@ console.log(answer);
 
 function showCorrectLetters() {
   console.log('showing correct letters');
+  // const guess = tileGridArray[currentRow];
+  // check for letter position in correct position
 }
 
 function checkGuess() {
@@ -41,14 +43,14 @@ function checkGuess() {
     console.log('Your guess is not a valid word');
     return;
   }
-  showCorrectLetters();
+  showCorrectLetters(guess);
   // Correct answer
   if (guess === answer) {
     console.log('You win game over');
     return;
   }
   // Next guess
-  if (currentRow < 5) {
+  if (currentRow < tileGridWidth) {
     currentRow += 1;
     currentCol = 0;
     return;
@@ -71,11 +73,11 @@ function handleKeyPress(key) {
     return;
   }
   if (key === 'Enter') {
-    if (currentCol < 5) return;
+    if (currentCol < tileGridWidth) return;
     checkGuess();
     return;
   }
-  if (currentCol > 4) return;
+  if (currentCol > tileGridWidth - 1) return;
   const currentTile = document.querySelector(
     `[data-id="tile-${currentRow}-${currentCol}"]`
   );
