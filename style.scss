@@ -1,3 +1,5 @@
+@use 'sass:math';
+
 $primary: #326dee;
 $secondary: #1ac886;
 $error: #d32752;
@@ -8,8 +10,7 @@ $grid-height: 385px;
 $grid-gap: 5px;
 
 $key-gap: 2px;
-$key-width: 50px;
-$key-height: 50px;
+$key-width: min(50px, 8vw);
 $keyboard-width: calc($key-width * 10 + $key-gap * 2 * 11); // 544
 
 $margin-base: 32px;
@@ -41,7 +42,6 @@ $colors: (
 
 .game-title {
   text-align: center;
-  margin-top: $margin-base;
   margin-bottom: $margin-base;
 }
 
@@ -50,14 +50,18 @@ $colors: (
   height: $grid-height;
   display: grid;
   grid-template-columns: repeat(5, 1fr);
+  grid-template-rows: repeat(6, 1fr);
   gap: $grid-gap;
   margin-inline: auto;
 }
 
 .tile {
+  display: grid;
+  place-items: center;
   border: 1px solid map-get($map: $colors, $key: 'grey');
   background-color: map-get($map: $colors, $key: 'light-grey');
   border-radius: 6px;
+  font-size: math.div($grid-width, 8);
 }
 
 .keyboard-container {
@@ -71,7 +75,7 @@ $colors: (
 }
 
 .key-tile {
-  height: $key-height;
+  height: $key-width;
   width: $key-width;
   border: 1px solid map-get($map: $colors, $key: 'grey');
   background-color: map-get($map: $colors, $key: 'light-grey');
@@ -79,11 +83,11 @@ $colors: (
   margin: $key-gap;
   cursor: pointer;
 
-  font-size: calc($key-height * 0.5);
+  font-size: calc($key-width * 0.5);
 }
 
-[data-id='key-Backspace'],
-[data-id='key-Enter'] {
+.key-tile:nth-child(20),
+.key-tile:nth-child(28) {
   width: calc($key-width * 1.54);
 }
 
