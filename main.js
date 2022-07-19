@@ -65,7 +65,7 @@ function showCorrectLetters(guessArray) {
       letterCount[letterL] -= 1;
       return;
     }
-    if (!Array.from(tile.classList).includes('green')) {
+    if (!tile.classList.contains('green')) {
       tile.classList.add('absent');
     }
   });
