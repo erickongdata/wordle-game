@@ -206,10 +206,8 @@ function createKeyboardDisplay() {
       keyElement.dataset.key = `${key}`;
     }
     keyElement.classList.add('key-tile');
+    keyElement.dataset.id = 'key-tile';
     keyElement.textContent = key;
-    keyElement.addEventListener('click', (e) =>
-      handleKeyPress(e.target.dataset.key)
-    );
     keyboardDisplay.append(keyElement);
   });
 }
@@ -218,10 +216,18 @@ function activateKeyInput() {
   document.addEventListener('keyup', processKeyInput);
 }
 
+function activateKeyboardDisplay() {
+  const keys = document.querySelectorAll('[data-id="key-tile"]');
+  keys.forEach((key) =>
+    key.addEventListener('click', (e) => handleKeyPress(e.target.dataset.key))
+  );
+}
+
 function initializeGame() {
   createTileGridDisplay();
   createKeyboardDisplay();
   activateKeyInput();
+  activateKeyboardDisplay();
 }
 
 initializeGame();
