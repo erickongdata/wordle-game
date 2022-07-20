@@ -21,6 +21,7 @@ const tileGridArray = Array.from(Array(tileGridHeight), () =>
   new Array(tileGridWidth).fill('')
 );
 
+let wordCheckPending = false;
 let isGameOver = false;
 
 function getWord(words) {
@@ -29,7 +30,7 @@ function getWord(words) {
 
 // Get a word from the wordList
 let answer = getWord(wordList);
-// const answer = 'begun';
+// let answer = 'scrap';
 // console.log(answer);
 
 function showKeyboardKeyColor(key, state) {
@@ -44,7 +45,8 @@ function showKeyboardKeyColor(key, state) {
     return;
   }
   if (state === 'absent') {
-    if (key.classList.contains('correct', 'present')) return;
+    if (key.classList.contains('correct') || key.classList.contains('present'))
+      return;
     key.classList.add('absent');
   }
 }
@@ -126,8 +128,8 @@ function startNewGame() {
 }
 
 function showModalMessage(msg) {
-  messageDisplay.style.display = 'flex';
   if (msg === 'win') {
+    messageDisplay.style.display = 'flex';
     message.textContent = 'Correct. You win!';
     messageButton.style.display = 'block';
     messageButton.textContent = 'New game';
@@ -135,18 +137,28 @@ function showModalMessage(msg) {
     return;
   }
   if (msg === 'invalid') {
+    messageDisplay.style.display = 'flex';
     message.textContent = 'Not a valid word';
     setTimeout(() => {
       message.textContent = '';
       messageDisplay.style.display = 'none';
-    }, 2000);
+    }, 3000);
     return;
   }
   if (msg === 'lose') {
-    message.textContent = 'Incorrect. Game over!';
+    messageDisplay.style.display = 'flex';
+    message.textContent = `You lose! It is "${answer.toUpperCase()}"`;
     messageButton.style.display = 'block';
     messageButton.textContent = 'New game';
     messageButton.addEventListener('click', startNewGame);
+  }
+  if (msg === 'word-check') {
+    messageDisplay.style.display = 'flex';
+    message.textContent = 'Checking word...';
+  }
+  if (msg === 'clear') {
+    messageDisplay.style.display = 'none';
+    message.textContent = '';
   }
 }
 
@@ -164,7 +176,13 @@ async function checkGuess() {
   }
   // Check guess is valid word
   // Use online dictionary API to validate word
+  wordCheckPending = true;
+  console.log('Checking word...');
+  showModalMessage('word-check');
   const result = await validateWord(guess).catch((err) => console.log(err));
+  showModalMessage('clear');
+  console.log('Word check done');
+  wordCheckPending = false;
   if (result === undefined) {
     showModalMessage('invalid');
     return;
@@ -182,7 +200,7 @@ async function checkGuess() {
 }
 
 function handleKeyPress(key) {
-  if (isGameOver) return;
+  if (isGameOver || wordCheckPending) return;
   if (key === 'Backspace') {
     if (currentCol <= 0) return;
     currentCol -= 1;
