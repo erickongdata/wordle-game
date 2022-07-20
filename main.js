@@ -25,25 +25,28 @@ function getWord(words) {
 }
 
 // Get a word from the wordList
-const answer = getWord(wordList);
+// const answer = getWord(wordList);
+const answer = 'begun';
 console.log(answer);
 
-function showKeyboardColor(key, state) {
+function showKeyboardKeyColor(key, state) {
   if (state === 'correct') {
-    key.classList.remove('absent', 'present');
+    key.classList.remove('present');
     key.classList.add('correct');
     return;
   }
   if (state === 'present') {
+    if (key.classList.contains('correct')) return;
     key.classList.add('present');
     return;
   }
   if (state === 'absent') {
+    if (key.classList.contains('correct', 'present')) return;
     key.classList.add('absent');
   }
 }
 
-function showCorrectLetters(guessArray) {
+function showCorrectTiles(guessArray) {
   // keep track of letter count in answer, e.g. queen => {q: 1, u: 1, e: 2, n: 1}
   const letterCount = [...answer].reduce((result, letter) => {
     const currentResult = { ...result };
@@ -64,9 +67,10 @@ function showCorrectLetters(guessArray) {
     );
     const key = document.querySelector(`[data-key="${letter}"]`);
     const letterL = letter.toLowerCase();
+
     if (letterL === answer[index]) {
       tile.classList.add('correct'); // change tile color
-      showKeyboardColor(key, 'correct');
+      showKeyboardKeyColor(key, 'correct');
       letterCount[letterL] -= 1; // deduct from letter count
     }
   });
@@ -79,18 +83,16 @@ function showCorrectLetters(guessArray) {
     );
     const key = document.querySelector(`[data-key="${letter}"]`);
     const letterL = letter.toLowerCase();
+
+    if (tile.classList.contains('correct')) return; // skip correct tiles
     if (letterL in letterCount && letterCount[letterL] > 0) {
       tile.classList.add('present');
-      showKeyboardColor(key, 'present');
+      showKeyboardKeyColor(key, 'present');
       letterCount[letterL] -= 1;
       return;
     }
-    if (!tile.classList.contains('correct')) {
-      tile.classList.add('absent');
-      if (!key.classList.contains('correct', 'present')) {
-        showKeyboardColor(key, 'absent');
-      }
-    }
+    tile.classList.add('absent');
+    showKeyboardKeyColor(key, 'absent');
   });
 }
 
@@ -104,7 +106,7 @@ function checkGuess() {
   //   console.log('Your guess is not a valid word');
   //   return;
   // }
-  showCorrectLetters(guessArray);
+  showCorrectTiles(guessArray);
   // Correct answer
   if (guess === answer) {
     console.log('You win game over');

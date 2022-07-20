@@ -1,7 +1,7 @@
 @use 'sass:math';
 
-$primary: #eed232;
-$secondary: #62c81a;
+$primary: hsl(49, 85%, 36%);
+$secondary: hsl(95, 76%, 36%);
 $error: #d32752;
 $info: #f6c31c;
 
@@ -10,7 +10,8 @@ $grid-height: 385px;
 $grid-gap: 5px;
 
 $key-gap: 2px;
-$key-width: min(50px, 8vw);
+$key-width: min(50px, 8.5vw);
+$key-height: 50px;
 $keyboard-width: calc($key-width * 10 + $key-gap * 2 * 11); // 544
 
 $margin-base: 32px;
@@ -26,9 +27,11 @@ $colors: (
   'green': #19e635,
   'orange': #ffa600,
   'purple': #9900ff,
-  'light-grey': hsl(0, 0%, 97%),
-  'grey': hsl(0, 0%, 75%),
-  'dark-grey': hsl(0, 0%, 55%),
+  'light-grey': hsl(0, 0%, 75%),
+  'grey': hsl(0, 0%, 50%),
+  'dark-grey': hsl(0, 0%, 25%),
+  'dark': hsl(0, 0%, 10%),
+  'light': hsl(0, 0%, 90%),
   'black': black,
   'white': white,
 );
@@ -41,7 +44,13 @@ $colors: (
   box-sizing: border-box;
 }
 
+body {
+  color: map-get($map: $colors, $key: 'light-grey');
+  background-color: map-get($map: $colors, $key: 'dark');
+}
+
 .game-title {
+  color: map-get($map: $colors, $key: 'light-grey');
   text-align: center;
   margin-bottom: $margin-base;
 }
@@ -59,8 +68,9 @@ $colors: (
 .tile {
   display: grid;
   place-items: center;
+  color: map-get($map: $colors, $key: 'white');
   border: 1px solid map-get($map: $colors, $key: 'grey');
-  background-color: map-get($map: $colors, $key: 'light-grey');
+  background-color: map-get($map: $colors, $key: 'dark');
   border-radius: 6px;
   font-size: math.div($grid-width, 8);
 }
@@ -76,10 +86,11 @@ $colors: (
 }
 
 .key-tile {
-  height: $key-width;
+  height: $key-height;
   width: $key-width;
-  border: 1px solid map-get($map: $colors, $key: 'grey');
-  background-color: map-get($map: $colors, $key: 'light-grey');
+  color: map-get($map: $colors, $key: 'white');
+  border: 1px solid map-get($map: $colors, $key: 'light-grey');
+  background-color: map-get($map: $colors, $key: 'grey');
   border-radius: 6px;
   margin: $key-gap;
   cursor: pointer;
@@ -99,13 +110,16 @@ $colors: (
 }
 
 .correct {
+  color: map-get($map: $colors, $key: 'white');
   background-color: map-get($map: $colors, $key: 'secondary');
 }
 
 .present {
+  color: map-get($map: $colors, $key: 'white');
   background-color: map-get($map: $colors, $key: 'primary');
 }
 
 .absent {
-  background-color: map-get($map: $colors, $key: 'grey');
+  color: map-get($map: $colors, $key: 'white');
+  background-color: map-get($map: $colors, $key: 'dark-grey');
 }
