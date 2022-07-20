@@ -1,7 +1,8 @@
+import axios from 'axios';
 import './style.scss';
 import keyboardKeys from './data/keyboardKeys';
 import wordList from './data/wordList';
-import allWords from './data/allWords';
+// import allWords from './data/allWords';
 
 const tileGridDisplay = document.querySelector('[data-id="grid"]');
 const keyboardDisplay = document.querySelector('[data-id="keyboard"]');
@@ -25,9 +26,9 @@ function getWord(words) {
 }
 
 // Get a word from the wordList
-// const answer = getWord(wordList);
-const answer = 'begun';
-console.log(answer);
+const answer = getWord(wordList);
+// const answer = 'begun';
+// console.log(answer);
 
 function showKeyboardKeyColor(key, state) {
   if (state === 'correct') {
@@ -96,23 +97,40 @@ function showCorrectTiles(guessArray) {
   });
 }
 
-function checkGuess() {
+// Use online dictionary API to validate word
+async function validateWord(word) {
+  const options = {
+    method: 'GET',
+    url: `https://api.dictionaryapi.dev/api/v2/entries/en/${word}`,
+  };
+
+  const response = await axios.request(options);
+  if (response.status === 200) {
+    return response.data.length;
+  }
+
+  throw new Error(response.status);
+}
+
+async function checkGuess() {
   if (isGameOver) return;
   const guessArray = tileGridArray[currentRow];
   const guess = guessArray.join('').toLowerCase();
   console.log(guess);
-  // Check if word is valid
-  // if (!allWords.includes(guess)) {
-  //   console.log('Your guess is not a valid word');
-  //   return;
-  // }
-  showCorrectTiles(guessArray);
   // Correct answer
   if (guess === answer) {
+    showCorrectTiles(guessArray);
     console.log('You win game over');
     isGameOver = true;
     return;
   }
+  // Check guess is valid word
+  const result = await validateWord(guess).catch((err) => console.log(err));
+  if (result === undefined) {
+    console.log('Not a valid word');
+    return;
+  }
+  showCorrectTiles(guessArray);
   // Next guess
   if (currentRow < tileGridWidth) {
     currentRow += 1;
@@ -133,7 +151,7 @@ function handleKeyPress(key) {
       `[data-id="tile-${currentRow}-${currentCol}"]`
     );
     currentTile.textContent = '';
-    tileGridArray[currentRow][currentCol] = ''; // update array
+    tileGridArray[currentRow][currentCol] = ''; // update tileGridArray
     return;
   }
   if (key === 'Enter') {
@@ -146,7 +164,7 @@ function handleKeyPress(key) {
     `[data-id="tile-${currentRow}-${currentCol}"]`
   );
   currentTile.textContent = key;
-  tileGridArray[currentRow][currentCol] = key; // update array
+  tileGridArray[currentRow][currentCol] = key; // update tileGridArray
   currentCol += 1;
 }
 
