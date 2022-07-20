@@ -21,7 +21,7 @@ const tileGridArray = Array.from(Array(tileGridHeight), () =>
 );
 
 function getWord(words) {
-  return words[Math.floor(Math.random() * wordList.length)];
+  return words[Math.floor(Math.random() * words.length)];
 }
 
 // Get a word from the wordList
