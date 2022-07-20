@@ -1,8 +1,8 @@
 import './style.scss';
 import wordList from './data/wordList';
 import {
-  tileGridArray,
   tileGridWidth,
+  tileGridHeight,
   createKeyboardDisplay,
   createTileGridDisplay,
 } from './components/createDisplay';
@@ -15,6 +15,12 @@ const messageButton = document.querySelector('[data-id="message-btn"]');
 let currentRow = 0;
 let currentCol = 0;
 
+// Empty 2d array for storing tile grid letters in memory
+// Dimensions (tileGridWidth x tileGridHeight)
+const tileGridArray = Array.from(Array(tileGridHeight), () =>
+  new Array(tileGridWidth).fill('')
+);
+
 let isGameOver = false;
 
 function getWord(words) {
@@ -22,7 +28,7 @@ function getWord(words) {
 }
 
 // Get a word from the wordList
-const answer = getWord(wordList);
+let answer = getWord(wordList);
 // const answer = 'begun';
 // console.log(answer);
 
@@ -93,6 +99,57 @@ function showCorrectTiles(guessArray) {
   });
 }
 
+function startNewGame() {
+  messageDisplay.style.display = 'none';
+  messageButton.style.display = 'none';
+  message.textContent = '';
+  messageButton.textContent = '';
+  // reset position
+  currentCol = 0;
+  currentRow = 0;
+  // clear tileGridArray
+  tileGridArray.map((row) => row.map(() => ''));
+  // clear tileGridDisplay
+  const tiles = document.querySelectorAll('[data-id^="tile"]');
+  for (let i = 0; i < tiles.length; i += 1) {
+    tiles[i].textContent = '';
+    tiles[i].classList.remove('absent', 'present', 'correct');
+  }
+  // clear keyboardDisplay colors
+  const keys = document.querySelectorAll('[data-id="key-tile"]');
+  for (let i = 0; i < keys.length; i += 1) {
+    keys[i].classList.remove('absent', 'present', 'correct');
+  }
+  // Get new word
+  answer = getWord(wordList);
+  isGameOver = false;
+}
+
+function showModalMessage(msg) {
+  messageDisplay.style.display = 'flex';
+  if (msg === 'win') {
+    message.textContent = 'Correct. You win!';
+    messageButton.style.display = 'block';
+    messageButton.textContent = 'New game';
+    messageButton.addEventListener('click', startNewGame);
+    return;
+  }
+  if (msg === 'invalid') {
+    message.textContent = 'Not a valid word';
+    setTimeout(() => {
+      message.textContent = '';
+      messageDisplay.style.display = 'none';
+    }, 2000);
+    return;
+  }
+  if (msg === 'lose') {
+    message.textContent = 'Incorrect. Game over!';
+    messageButton.style.display = 'block';
+    messageButton.textContent = 'New game';
+    messageButton.addEventListener('click', startNewGame);
+  }
+}
+
 async function checkGuess() {
   if (isGameOver) return;
   const guessArray = tileGridArray[currentRow];
@@ -101,7 +158,7 @@ async function checkGuess() {
   // Correct answer
   if (guess === answer) {
     showCorrectTiles(guessArray);
-    message.textContent = 'Correct. You win!';
+    showModalMessage('win');
     isGameOver = true;
     return;
   }
@@ -109,10 +166,7 @@ async function checkGuess() {
   // Use online dictionary API to validate word
   const result = await validateWord(guess).catch((err) => console.log(err));
   if (result === undefined) {
-    message.textContent = 'Not a valid word';
-    setTimeout(() => {
-      message.textContent = '';
-    }, 2000);
+    showModalMessage('invalid');
     return;
   }
   showCorrectTiles(guessArray);
@@ -123,7 +177,7 @@ async function checkGuess() {
     return;
   }
   // Out of guesses
-  message.textContent = 'Game over!';
+  showModalMessage('lose');
   isGameOver = true;
 }
 

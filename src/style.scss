@@ -142,34 +142,32 @@ body {
 }
 
 .message-container {
-  display: flex;
+  display: none;
   justify-content: center;
   align-items: center;
   flex-direction: column;
   position: fixed;
   top: calc($grid-height * 0.4);
   left: calc(50% - $modal-width * 0.5);
-  background-color: map-get($map: $colors, $key: 'dark-grey');
+  background-color: map-get($map: $colors, $key: 'dark');
   border: 1px solid map-get($map: $colors, $key: 'light-grey');
   border-radius: $border-radius;
   width: $modal-width;
   min-height: calc($grid-height * 0.2);
+  padding: 0.5em;
 }
 
 .message {
   color: map-get($map: $colors, $key: 'light');
   font-size: 1.25rem;
-  margin-top: 0.5rem;
-  margin-bottom: 1rem;
-  padding-inline: 0.5rem;
   text-align: center;
 }
 
 .btn {
-  display: block;
+  display: none;
   font-size: 1.125rem;
   padding: 0.25rem 0.5rem;
-  margin-bottom: 0.5rem;
+  margin-top: 1rem;
   cursor: pointer;
   border-radius: $border-radius;
   border: none;

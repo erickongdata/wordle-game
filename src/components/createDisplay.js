@@ -10,12 +10,12 @@ const tileGridHeight = 6;
 
 // Empty 2d array for storing tile grid letters in memory
 // Dimensions (tileGridWidth x tileGridHeight)
-const tileGridArray = Array.from(Array(tileGridHeight), () =>
+const tileArray = Array.from(Array(tileGridHeight), () =>
   new Array(tileGridWidth).fill('')
 );
 
 function createTileGridDisplay() {
-  tileGridArray.forEach((row, rowIndex) => {
+  tileArray.forEach((row, rowIndex) => {
     row.forEach((col, colIndex) => {
       const tileElement = document.createElement('div');
       tileElement.dataset.id = `tile-${rowIndex}-${colIndex}`;
@@ -42,7 +42,6 @@ function createKeyboardDisplay() {
 }
 
 export {
-  tileGridArray,
   tileGridHeight,
   tileGridWidth,
   createKeyboardDisplay,
