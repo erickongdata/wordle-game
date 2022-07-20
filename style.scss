@@ -14,7 +14,10 @@ $key-width: min(50px, 8.5vw);
 $key-height: 50px;
 $keyboard-width: calc($key-width * 10 + $key-gap * 2 * 11); // 544
 
+$modal-width: 220px;
+
 $margin-base: 32px;
+$border-radius: 6px;
 
 $colors: (
   'primary': $primary,
@@ -56,13 +59,14 @@ body {
 }
 
 .grid-container {
-  width: $grid-width;
-  height: $grid-height;
+  width: calc($grid-width * 0.8);
+  height: calc($grid-height * 0.8);
   display: grid;
   grid-template-columns: repeat(5, 1fr);
   grid-template-rows: repeat(6, 1fr);
   gap: $grid-gap;
   margin-inline: auto;
+  margin-bottom: calc($margin-base * 0.5);
 }
 
 .tile {
@@ -71,8 +75,19 @@ body {
   color: map-get($map: $colors, $key: 'white');
   border: 1px solid map-get($map: $colors, $key: 'grey');
   background-color: map-get($map: $colors, $key: 'dark');
-  border-radius: 6px;
-  font-size: math.div($grid-width, 8);
+  border-radius: $border-radius;
+  font-size: math.div($grid-width, 10);
+}
+
+@media (min-width: 560px) {
+  .grid-container {
+    width: $grid-width;
+    height: $grid-height;
+  }
+
+  .tile {
+    font-size: math.div($grid-width, 8);
+  }
 }
 
 .keyboard-container {
@@ -82,7 +97,6 @@ body {
   flex-wrap: wrap;
   width: $keyboard-width;
   margin-inline: auto;
-  margin-top: $margin-base;
 }
 
 .key-tile {
@@ -91,7 +105,7 @@ body {
   color: map-get($map: $colors, $key: 'white');
   border: 1px solid map-get($map: $colors, $key: 'light-grey');
   background-color: map-get($map: $colors, $key: 'grey');
-  border-radius: 6px;
+  border-radius: $border-radius;
   margin: $key-gap;
   cursor: pointer;
 
@@ -125,4 +139,40 @@ body {
   color: map-get($map: $colors, $key: 'white');
   border-color: map-get($map: $colors, $key: 'white');
   background-color: map-get($map: $colors, $key: 'dark-grey');
+}
+
+.message-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  position: fixed;
+  top: calc($grid-height * 0.4);
+  left: calc(50% - $modal-width * 0.5);
+  background-color: map-get($map: $colors, $key: 'dark-grey');
+  border: 1px solid map-get($map: $colors, $key: 'light-grey');
+  border-radius: $border-radius;
+  width: $modal-width;
+  min-height: calc($grid-height * 0.2);
+}
+
+.message {
+  color: map-get($map: $colors, $key: 'light');
+  font-size: 1.25rem;
+  margin-top: 0.5rem;
+  margin-bottom: 1rem;
+  padding-inline: 0.5rem;
+  text-align: center;
+}
+
+.btn {
+  display: block;
+  font-size: 1.125rem;
+  padding: 0.25rem 0.5rem;
+  margin-bottom: 0.5rem;
+  cursor: pointer;
+  border-radius: $border-radius;
+  border: none;
+  background-color: map-get($map: $colors, $key: 'light-grey');
+  color: map-get($map: $colors, $key: 'black');
 }

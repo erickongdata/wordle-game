@@ -2,10 +2,14 @@ import axios from 'axios';
 import './style.scss';
 import keyboardKeys from './data/keyboardKeys';
 import wordList from './data/wordList';
-// import allWords from './data/allWords';
 
-const tileGridDisplay = document.querySelector('[data-id="grid"]');
-const keyboardDisplay = document.querySelector('[data-id="keyboard"]');
+const tileGridDisplay = document.querySelector('[data-id="grid-container"]');
+const keyboardDisplay = document.querySelector(
+  '[data-id="keyboard-container"]'
+);
+const messageDisplay = document.querySelector('[data-id="message-container"]');
+const message = document.querySelector('[data-id="message"]');
+const messageButton = document.querySelector('[data-id="message-btn"]');
 
 let currentRow = 0;
 let currentCol = 0;
@@ -116,18 +120,21 @@ async function checkGuess() {
   if (isGameOver) return;
   const guessArray = tileGridArray[currentRow];
   const guess = guessArray.join('').toLowerCase();
-  console.log(guess);
+  // console.log(guess);
   // Correct answer
   if (guess === answer) {
     showCorrectTiles(guessArray);
-    console.log('You win game over');
+    message.textContent = 'Correct. You win!';
     isGameOver = true;
     return;
   }
   // Check guess is valid word
   const result = await validateWord(guess).catch((err) => console.log(err));
   if (result === undefined) {
-    console.log('Not a valid word');
+    message.textContent = 'Not a valid word';
+    setTimeout(() => {
+      message.textContent = '';
+    }, 2000);
     return;
   }
   showCorrectTiles(guessArray);
@@ -138,7 +145,7 @@ async function checkGuess() {
     return;
   }
   // Out of guesses
-  console.log('Game Over');
+  message.textContent = 'Game over!';
   isGameOver = true;
 }
 
