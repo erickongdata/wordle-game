@@ -1,12 +1,13 @@
-import axios from 'axios';
 import './style.scss';
-import keyboardKeys from './data/keyboardKeys';
 import wordList from './data/wordList';
+import {
+  tileGridArray,
+  tileGridWidth,
+  createKeyboardDisplay,
+  createTileGridDisplay,
+} from './components/createDisplay';
+import validateWord from './utilities/validateWord';
 
-const tileGridDisplay = document.querySelector('[data-id="grid-container"]');
-const keyboardDisplay = document.querySelector(
-  '[data-id="keyboard-container"]'
-);
 const messageDisplay = document.querySelector('[data-id="message-container"]');
 const message = document.querySelector('[data-id="message"]');
 const messageButton = document.querySelector('[data-id="message-btn"]');
@@ -14,16 +15,7 @@ const messageButton = document.querySelector('[data-id="message-btn"]');
 let currentRow = 0;
 let currentCol = 0;
 
-const tileGridWidth = 5;
-const tileGridHeight = 6;
-
 let isGameOver = false;
-
-// Empty 2d array for storing tile grid letters in memory
-// Dimensions (tileGridWidth x tileGridHeight)
-const tileGridArray = Array.from(Array(tileGridHeight), () =>
-  new Array(tileGridWidth).fill('')
-);
 
 function getWord(words) {
   return words[Math.floor(Math.random() * words.length)];
@@ -101,21 +93,6 @@ function showCorrectTiles(guessArray) {
   });
 }
 
-// Use online dictionary API to validate word
-async function validateWord(word) {
-  const options = {
-    method: 'GET',
-    url: `https://api.dictionaryapi.dev/api/v2/entries/en/${word}`,
-  };
-
-  const response = await axios.request(options);
-  if (response.status === 200) {
-    return response.data.length;
-  }
-
-  throw new Error(response.status);
-}
-
 async function checkGuess() {
   if (isGameOver) return;
   const guessArray = tileGridArray[currentRow];
@@ -129,6 +106,7 @@ async function checkGuess() {
     return;
   }
   // Check guess is valid word
+  // Use online dictionary API to validate word
   const result = await validateWord(guess).catch((err) => console.log(err));
   if (result === undefined) {
     message.textContent = 'Not a valid word';
@@ -183,33 +161,6 @@ function processKeyInput(e) {
   if (e.code >= 'KeyA' && e.code <= 'KeyZ') {
     handleKeyPress(e.code[3]);
   }
-}
-
-function createTileGridDisplay() {
-  tileGridArray.forEach((row, rowIndex) => {
-    row.forEach((col, colIndex) => {
-      const tileElement = document.createElement('div');
-      tileElement.dataset.id = `tile-${rowIndex}-${colIndex}`;
-      tileElement.classList.add('tile');
-      tileGridDisplay.append(tileElement);
-    });
-  });
-}
-
-function createKeyboardDisplay() {
-  keyboardKeys.forEach((key) => {
-    const keyElement = document.createElement('button');
-    keyElement.type = 'button';
-    if (key === '⌫') {
-      keyElement.dataset.key = `Backspace`;
-    } else {
-      keyElement.dataset.key = `${key}`;
-    }
-    keyElement.classList.add('key-tile');
-    keyElement.dataset.id = 'key-tile';
-    keyElement.textContent = key;
-    keyboardDisplay.append(keyElement);
-  });
 }
 
 function activateKeyInput() {
