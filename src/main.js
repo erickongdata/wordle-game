@@ -7,6 +7,10 @@ import {
   createTileGridDisplay,
 } from './components/createDisplay';
 import validateWord from './utilities/validateWord';
+import {
+  getUniqueArrayElements,
+  checkArrayContainsAllElements,
+} from './utilities/getUniqueArrayElements';
 
 const messageDisplay = document.querySelector('[data-id="message-container"]');
 const message = document.querySelector('[data-id="message"]');
@@ -23,14 +27,18 @@ let tileGridArray = Array.from(Array(tileGridHeight), () =>
 
 let wordCheckPending = false;
 let isGameOver = false;
+const hardMode = true;
+
+// In hard mode, keep track of revealed letters
+let revealedLetters = [];
 
 function getWord(words) {
   return words[Math.floor(Math.random() * words.length)];
 }
 
 // Get a word from the wordList
-let answer = getWord(wordList);
-// let answer = 'scrap';
+// let answer = getWord(wordList);
+let answer = 'guess';
 // console.log(answer);
 
 function showKeyboardKeyColor(key, state) {
@@ -63,6 +71,9 @@ function showCorrectTiles(guessArray) {
     return currentResult;
   }, {});
 
+  // keep track of letters highlighted in current row for hard mode
+  const rowHighlightedLetters = [];
+
   // 1st pass
   // Compare guessArray ['g', 'u', 'e', 's', 's'] with answer string 'queen'
   // check for letter in correct position only
@@ -77,6 +88,8 @@ function showCorrectTiles(guessArray) {
       tile.classList.add('correct'); // change tile color
       showKeyboardKeyColor(key, 'correct');
       letterCount[letterL] -= 1; // deduct from letter count
+      // hard mode
+      rowHighlightedLetters.push(letterL);
     }
   });
 
@@ -94,11 +107,22 @@ function showCorrectTiles(guessArray) {
       tile.classList.add('present');
       showKeyboardKeyColor(key, 'present');
       letterCount[letterL] -= 1;
+      // hard mode
+      rowHighlightedLetters.push(letterL);
       return;
     }
     tile.classList.add('absent');
     showKeyboardKeyColor(key, 'absent');
   });
+
+  // hard mode
+  // update revealedLetters
+  revealedLetters = getUniqueArrayElements(
+    revealedLetters,
+    rowHighlightedLetters
+  );
+  console.log(`revealedLetters: ${revealedLetters}`);
+  console.log(`rowHighlighted: ${rowHighlightedLetters}`);
 }
 
 function startNewGame() {
@@ -125,6 +149,8 @@ function startNewGame() {
   // Get new word
   answer = getWord(wordList);
   isGameOver = false;
+  // hard mode
+  revealedLetters = [];
 }
 
 function showModalMessage(msg) {
@@ -165,7 +191,10 @@ function showModalMessage(msg) {
 async function checkGuess() {
   if (isGameOver) return;
   const guessArray = tileGridArray[currentRow];
-  const guess = guessArray.join('').toLowerCase();
+  const guessArrayL = guessArray.map((letter) => letter.toLowerCase());
+  const guess = guessArrayL.join('');
+  console.log(`guess: ${guess}`);
+  console.log(`guessArray: ${guessArray}`);
   // console.log(guess);
   // Correct answer
   if (guess === answer) {
@@ -174,15 +203,20 @@ async function checkGuess() {
     isGameOver = true;
     return;
   }
+  // Hard mode letter check
+  if (hardMode) {
+    if (!checkArrayContainsAllElements(revealedLetters, guessArrayL)) {
+      console.log('Hard mode - must use all revealed hints');
+      return;
+    }
+  }
   // Check guess is valid word
   // Use online dictionary API to validate word
   // --------------------------------
   wordCheckPending = true;
-  console.log('Checking word...');
   showModalMessage('word-check');
   const result = await validateWord(guess).catch((err) => console.log(err));
   showModalMessage('clear');
-  console.log('Word check done');
   wordCheckPending = false;
   if (result === undefined) {
     showModalMessage('invalid');
