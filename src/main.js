@@ -18,6 +18,7 @@ const message = document.querySelector('[data-id="message"]');
 const messageButton = document.querySelector('[data-id="message-btn"]');
 
 const modeButton = document.querySelector('[data-id="mode-btn"]');
+const quitButton = document.querySelector('[data-id="quit-btn"]');
 
 let currentRow = 0;
 let currentCol = 0;
@@ -32,6 +33,7 @@ let wordCheckPending = false;
 let isGameOver = false;
 let gameMode = 'easy';
 let gameModeChangeable = true;
+let gameQuittable = false;
 
 // In medium mode, keep track of revealed letters
 let revealedLetters = [];
@@ -155,6 +157,7 @@ function startNewGame() {
   }
   // Get new word
   answer = getWord(wordList);
+  // Reinitialize
   isGameOver = false;
   gameModeChangeable = true;
   // medium mode
@@ -272,7 +275,10 @@ async function checkGuess() {
 
 function handleKeyPress(key) {
   if (isGameOver || wordCheckPending) return;
+  // After first key press, gameMode is locked and game is quittable
   if (gameModeChangeable) gameModeChangeable = false;
+  if (!gameQuittable) gameQuittable = true;
+
   if (key === 'Backspace') {
     if (currentCol <= 0) return;
     currentCol -= 1;
@@ -336,8 +342,16 @@ function changeMode() {
   }
 }
 
+function quitGame() {
+  if (!gameQuittable) return;
+  gameQuittable = false;
+  showModalMessage('lose');
+  isGameOver = true;
+}
+
 function activateNavbarButtons() {
   modeButton.addEventListener('click', changeMode);
+  quitButton.addEventListener('click', quitGame);
 }
 
 function initializeGame() {
