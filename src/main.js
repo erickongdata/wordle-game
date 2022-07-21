@@ -27,9 +27,9 @@ let tileGridArray = Array.from(Array(tileGridHeight), () =>
 
 let wordCheckPending = false;
 let isGameOver = false;
-const hardMode = true;
+const gameMode = 'medium';
 
-// In hard mode, keep track of revealed letters
+// In medium mode, keep track of revealed letters
 let revealedLetters = [];
 
 function getWord(words) {
@@ -71,7 +71,7 @@ function showCorrectTiles(guessArray) {
     return currentResult;
   }, {});
 
-  // keep track of letters highlighted in current row for hard mode
+  // keep track of letters highlighted in current row for medium mode
   const rowHighlightedLetters = [];
 
   // 1st pass
@@ -88,7 +88,7 @@ function showCorrectTiles(guessArray) {
       tile.classList.add('correct'); // change tile color
       showKeyboardKeyColor(key, 'correct');
       letterCount[letterL] -= 1; // deduct from letter count
-      // hard mode
+      // medium mode
       rowHighlightedLetters.push(letterL);
     }
   });
@@ -107,7 +107,7 @@ function showCorrectTiles(guessArray) {
       tile.classList.add('present');
       showKeyboardKeyColor(key, 'present');
       letterCount[letterL] -= 1;
-      // hard mode
+      // medium mode
       rowHighlightedLetters.push(letterL);
       return;
     }
@@ -115,14 +115,12 @@ function showCorrectTiles(guessArray) {
     showKeyboardKeyColor(key, 'absent');
   });
 
-  // hard mode
+  // medium mode
   // update revealedLetters
   revealedLetters = getUniqueArrayElements(
     revealedLetters,
     rowHighlightedLetters
   );
-  console.log(`revealedLetters: ${revealedLetters}`);
-  console.log(`rowHighlighted: ${rowHighlightedLetters}`);
 }
 
 function startNewGame() {
@@ -149,7 +147,7 @@ function startNewGame() {
   // Get new word
   answer = getWord(wordList);
   isGameOver = false;
-  // hard mode
+  // medium mode
   revealedLetters = [];
 }
 
@@ -182,6 +180,15 @@ function showModalMessage(msg) {
     messageDisplay.style.display = 'flex';
     message.textContent = 'Checking word...';
   }
+  if (msg === 'medium') {
+    messageDisplay.style.display = 'flex';
+    message.textContent = 'Must y';
+    setTimeout(() => {
+      message.textContent = '';
+      messageDisplay.style.display = 'none';
+    }, 3000);
+    return;
+  }
   if (msg === 'clear') {
     messageDisplay.style.display = 'none';
     message.textContent = '';
@@ -193,9 +200,6 @@ async function checkGuess() {
   const guessArray = tileGridArray[currentRow];
   const guessArrayL = guessArray.map((letter) => letter.toLowerCase());
   const guess = guessArrayL.join('');
-  console.log(`guess: ${guess}`);
-  console.log(`guessArray: ${guessArray}`);
-  // console.log(guess);
   // Correct answer
   if (guess === answer) {
     showCorrectTiles(guessArray);
@@ -203,10 +207,10 @@ async function checkGuess() {
     isGameOver = true;
     return;
   }
-  // Hard mode letter check
-  if (hardMode) {
+  // medium mode letter check
+  if (gameMode === 'medium') {
     if (!checkArrayContainsAllElements(revealedLetters, guessArrayL)) {
-      console.log('Hard mode - must use all revealed hints');
+      console.log('Medium mode - must use all revealed hints');
       return;
     }
   }
