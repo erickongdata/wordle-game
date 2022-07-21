@@ -17,6 +17,8 @@ const messageDisplay = document.querySelector('[data-id="message-container"]');
 const message = document.querySelector('[data-id="message"]');
 const messageButton = document.querySelector('[data-id="message-btn"]');
 
+const modeButton = document.querySelector('[data-id="mode-btn"]');
+
 let currentRow = 0;
 let currentCol = 0;
 
@@ -28,7 +30,8 @@ let tileGridArray = Array.from(Array(tileGridHeight), () =>
 
 let wordCheckPending = false;
 let isGameOver = false;
-const gameMode = 'hard';
+let gameMode = 'easy';
+let gameModeChangeable = true;
 
 // In medium mode, keep track of revealed letters
 let revealedLetters = [];
@@ -153,8 +156,10 @@ function startNewGame() {
   // Get new word
   answer = getWord(wordList);
   isGameOver = false;
+  gameModeChangeable = true;
   // medium mode
   revealedLetters = [];
+  // hard mode
   revealedCorrectLetters = revealedCorrectLetters.map(() => '');
 }
 
@@ -267,6 +272,7 @@ async function checkGuess() {
 
 function handleKeyPress(key) {
   if (isGameOver || wordCheckPending) return;
+  if (gameModeChangeable) gameModeChangeable = false;
   if (key === 'Backspace') {
     if (currentCol <= 0) return;
     currentCol -= 1;
@@ -312,11 +318,34 @@ function activateKeyboardDisplay() {
   );
 }
 
+function changeMode() {
+  if (!gameModeChangeable) return;
+  if (gameMode === 'easy') {
+    gameMode = 'medium';
+    modeButton.textContent = 'Medium';
+    return;
+  }
+  if (gameMode === 'medium') {
+    gameMode = 'hard';
+    modeButton.textContent = 'Hard';
+    return;
+  }
+  if (gameMode === 'hard') {
+    gameMode = 'easy';
+    modeButton.textContent = 'Easy';
+  }
+}
+
+function activateNavbarButtons() {
+  modeButton.addEventListener('click', changeMode);
+}
+
 function initializeGame() {
   createTileGridDisplay();
   createKeyboardDisplay();
   activateKeyInput();
   activateKeyboardDisplay();
+  activateNavbarButtons();
 }
 
 initializeGame();
