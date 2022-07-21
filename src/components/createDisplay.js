@@ -8,14 +8,14 @@ const keyboardDisplay = document.querySelector(
 const tileGridWidth = 5;
 const tileGridHeight = 6;
 
-// Empty 2d array for storing tile grid letters in memory
+// Empty 2d array
 // Dimensions (tileGridWidth x tileGridHeight)
-const tileArray = Array.from(Array(tileGridHeight), () =>
+const emptyArray = Array.from(Array(tileGridHeight), () =>
   new Array(tileGridWidth).fill('')
 );
 
 function createTileGridDisplay() {
-  tileArray.forEach((row, rowIndex) => {
+  emptyArray.forEach((row, rowIndex) => {
     row.forEach((col, colIndex) => {
       const tileElement = document.createElement('div');
       tileElement.dataset.id = `tile-${rowIndex}-${colIndex}`;

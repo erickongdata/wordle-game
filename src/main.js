@@ -17,7 +17,7 @@ let currentCol = 0;
 
 // Empty 2d array for storing tile grid letters in memory
 // Dimensions (tileGridWidth x tileGridHeight)
-const tileGridArray = Array.from(Array(tileGridHeight), () =>
+let tileGridArray = Array.from(Array(tileGridHeight), () =>
   new Array(tileGridWidth).fill('')
 );
 
@@ -110,7 +110,7 @@ function startNewGame() {
   currentCol = 0;
   currentRow = 0;
   // clear tileGridArray
-  tileGridArray.map((row) => row.map(() => ''));
+  tileGridArray = tileGridArray.map((row) => row.map(() => ''));
   // clear tileGridDisplay
   const tiles = document.querySelectorAll('[data-id^="tile"]');
   for (let i = 0; i < tiles.length; i += 1) {
@@ -176,6 +176,7 @@ async function checkGuess() {
   }
   // Check guess is valid word
   // Use online dictionary API to validate word
+  // --------------------------------
   wordCheckPending = true;
   console.log('Checking word...');
   showModalMessage('word-check');
@@ -187,6 +188,7 @@ async function checkGuess() {
     showModalMessage('invalid');
     return;
   }
+  // --------------------------------
   showCorrectTiles(guessArray);
   // Next guess
   if (currentRow < tileGridWidth) {
