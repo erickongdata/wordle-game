@@ -11,6 +11,7 @@ import {
   getUniqueArrayElements,
   checkArrayContainsAllElements,
 } from './utilities/getUniqueArrayElements';
+import checkArrayElementPosition from './utilities/checkArrayElementPosition';
 
 const messageDisplay = document.querySelector('[data-id="message-container"]');
 const message = document.querySelector('[data-id="message"]');
@@ -27,10 +28,13 @@ let tileGridArray = Array.from(Array(tileGridHeight), () =>
 
 let wordCheckPending = false;
 let isGameOver = false;
-const gameMode = 'medium';
+const gameMode = 'hard';
 
 // In medium mode, keep track of revealed letters
 let revealedLetters = [];
+
+// In hard mode, also keep track of revealed correct letters in array ['g', '', 'e', '', 's']
+let revealedCorrectLetters = new Array(tileGridWidth).fill('');
 
 function getWord(words) {
   return words[Math.floor(Math.random() * words.length)];
@@ -90,6 +94,8 @@ function showCorrectTiles(guessArray) {
       letterCount[letterL] -= 1; // deduct from letter count
       // medium mode
       rowHighlightedLetters.push(letterL);
+      // hard mode
+      revealedCorrectLetters[index] = letterL;
     }
   });
 
@@ -149,12 +155,13 @@ function startNewGame() {
   isGameOver = false;
   // medium mode
   revealedLetters = [];
+  revealedCorrectLetters = revealedCorrectLetters.map(() => '');
 }
 
 function showModalMessage(msg) {
   if (msg === 'win') {
     messageDisplay.style.display = 'flex';
-    message.textContent = 'Correct. You win!';
+    message.textContent = 'WINNER!';
     messageButton.style.display = 'block';
     messageButton.textContent = 'New game';
     messageButton.addEventListener('click', startNewGame);
@@ -162,7 +169,7 @@ function showModalMessage(msg) {
   }
   if (msg === 'invalid') {
     messageDisplay.style.display = 'flex';
-    message.textContent = 'Not a valid word';
+    message.textContent = 'Invalid word!';
     setTimeout(() => {
       message.textContent = '';
       messageDisplay.style.display = 'none';
@@ -171,7 +178,7 @@ function showModalMessage(msg) {
   }
   if (msg === 'lose') {
     messageDisplay.style.display = 'flex';
-    message.textContent = `You lose! It is "${answer.toUpperCase()}"`;
+    message.textContent = `FAILED! It was "${answer.toUpperCase()}"`;
     messageButton.style.display = 'block';
     messageButton.textContent = 'New game';
     messageButton.addEventListener('click', startNewGame);
@@ -182,7 +189,16 @@ function showModalMessage(msg) {
   }
   if (msg === 'medium') {
     messageDisplay.style.display = 'flex';
-    message.textContent = 'Must y';
+    message.textContent = 'Use ALL revealed letters!';
+    setTimeout(() => {
+      message.textContent = '';
+      messageDisplay.style.display = 'none';
+    }, 3000);
+    return;
+  }
+  if (msg === 'hard') {
+    messageDisplay.style.display = 'flex';
+    message.textContent = 'Use ALL revealed letters in their correct position!';
     setTimeout(() => {
       message.textContent = '';
       messageDisplay.style.display = 'none';
@@ -210,7 +226,17 @@ async function checkGuess() {
   // medium mode letter check
   if (gameMode === 'medium') {
     if (!checkArrayContainsAllElements(revealedLetters, guessArrayL)) {
-      console.log('Medium mode - must use all revealed hints');
+      showModalMessage('medium');
+      return;
+    }
+  }
+  // hard mode letter check
+  if (gameMode === 'hard') {
+    if (
+      !checkArrayElementPosition(revealedCorrectLetters, guessArrayL) ||
+      !checkArrayContainsAllElements(revealedLetters, guessArrayL)
+    ) {
+      showModalMessage('hard');
       return;
     }
   }
