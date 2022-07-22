@@ -47,7 +47,7 @@ function getWord(words) {
 
 // Get a word from the wordList
 // let answer = getWord(wordList);
-let answer = 'guess';
+let answer = 'scree';
 // console.log(answer);
 
 function showKeyboardKeyColor(key, state) {
@@ -66,6 +66,19 @@ function showKeyboardKeyColor(key, state) {
       return;
     key.classList.add('absent');
   }
+}
+
+function tileFlipAnimation(tile, index, state) {
+  // 0.4s duration
+  setTimeout(() => {
+    tile.classList.add('tile-flip');
+  }, (index + 1) * 100); // start time
+  setTimeout(() => {
+    tile.classList.add(state); // change tile color
+  }, (index + 1) * 100 + 200);
+  setTimeout(() => {
+    tile.classList.remove('tile-flip');
+  }, (index + 1) * 100 + 400);
 }
 
 function showCorrectTiles(guessArray) {
@@ -94,7 +107,8 @@ function showCorrectTiles(guessArray) {
     const letterL = letter.toLowerCase();
 
     if (letterL === answer[index]) {
-      tile.classList.add('correct'); // change tile color
+      tile.classList.add('flipped-correct');
+      tileFlipAnimation(tile, index, 'correct');
       showKeyboardKeyColor(key, 'correct');
       letterCount[letterL] -= 1; // deduct from letter count
       // medium mode
@@ -113,16 +127,16 @@ function showCorrectTiles(guessArray) {
     const key = document.querySelector(`[data-key="${letter}"]`);
     const letterL = letter.toLowerCase();
 
-    if (tile.classList.contains('correct')) return; // skip correct tiles
+    if (tile.classList.contains('flipped-correct')) return; // skip correct tiles
     if (letterL in letterCount && letterCount[letterL] > 0) {
-      tile.classList.add('present');
+      tileFlipAnimation(tile, index, 'present');
       showKeyboardKeyColor(key, 'present');
       letterCount[letterL] -= 1;
       // medium mode
       rowHighlightedLetters.push(letterL);
       return;
     }
-    tile.classList.add('absent');
+    tileFlipAnimation(tile, index, 'absent');
     showKeyboardKeyColor(key, 'absent');
   });
 
@@ -148,7 +162,12 @@ function startNewGame() {
   const tiles = document.querySelectorAll('[data-id^="tile"]');
   for (let i = 0; i < tiles.length; i += 1) {
     tiles[i].textContent = '';
-    tiles[i].classList.remove('absent', 'present', 'correct');
+    tiles[i].classList.remove(
+      'absent',
+      'present',
+      'correct',
+      'flipped-correct'
+    );
   }
   // clear keyboardDisplay colors
   const keys = document.querySelectorAll('[data-id="key-tile"]');
