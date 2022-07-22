@@ -15,6 +15,7 @@ import checkArrayElementPosition from './utilities/checkArrayElementPosition';
 
 const messageDisplay = document.querySelector('[data-id="message-container"]');
 const message = document.querySelector('[data-id="message"]');
+const messageWord = document.querySelector('[data-id="message-word"]');
 const messageButton = document.querySelector('[data-id="message-btn"]');
 
 const modeButton = document.querySelector('[data-id="mode-btn"]');
@@ -69,16 +70,17 @@ function showKeyboardKeyColor(key, state) {
 }
 
 function tileFlipAnimation(tile, index, state) {
-  // 0.4s duration
+  const startDelay = (index + 1) * 100;
+  const duration = 400;
   setTimeout(() => {
     tile.classList.add('tile-flip');
-  }, (index + 1) * 100); // start time
+  }, startDelay); // start time
   setTimeout(() => {
     tile.classList.add(state); // change tile color
-  }, (index + 1) * 100 + 200);
+  }, startDelay + duration * 0.5);
   setTimeout(() => {
     tile.classList.remove('tile-flip');
-  }, (index + 1) * 100 + 400);
+  }, startDelay + duration);
 }
 
 function showCorrectTiles(guessArray) {
@@ -152,7 +154,9 @@ function startNewGame() {
   messageDisplay.style.display = 'none';
   messageButton.style.display = 'none';
   message.textContent = '';
+  messageWord.textContent = '';
   messageButton.textContent = '';
+  messageButton.removeEventListener('click', startNewGame);
   // reset position
   currentCol = 0;
   currentRow = 0;
@@ -186,55 +190,58 @@ function startNewGame() {
 }
 
 function showModalMessage(msg) {
+  const hideModal = (delay = 3000) => {
+    setTimeout(() => {
+      message.textContent = '';
+      messageDisplay.style.display = 'none';
+    }, delay);
+  };
+  if (msg === 'clear') {
+    hideModal(0);
+  }
+  messageDisplay.style.display = 'flex';
+
   if (msg === 'win') {
-    messageDisplay.style.display = 'flex';
     message.textContent = 'WINNER!';
     messageButton.style.display = 'block';
     messageButton.textContent = 'New game';
     messageButton.addEventListener('click', startNewGame);
     return;
   }
-  if (msg === 'invalid') {
-    messageDisplay.style.display = 'flex';
-    message.textContent = 'Invalid word!';
-    setTimeout(() => {
-      message.textContent = '';
-      messageDisplay.style.display = 'none';
-    }, 3000);
-    return;
-  }
   if (msg === 'lose') {
-    messageDisplay.style.display = 'flex';
-    message.textContent = `YOU LOST! It was "${answer.toUpperCase()}"`;
+    message.textContent = 'You lost! It was';
+    messageWord.textContent = answer.toUpperCase();
     messageButton.style.display = 'block';
     messageButton.textContent = 'New game';
     messageButton.addEventListener('click', startNewGame);
   }
-  if (msg === 'word-check') {
-    messageDisplay.style.display = 'flex';
-    message.textContent = 'Checking word...';
-  }
   if (msg === 'medium') {
-    messageDisplay.style.display = 'flex';
     message.textContent = 'Use ALL revealed letters!';
-    setTimeout(() => {
-      message.textContent = '';
-      messageDisplay.style.display = 'none';
-    }, 3000);
+    hideModal();
     return;
   }
   if (msg === 'hard') {
-    messageDisplay.style.display = 'flex';
     message.textContent = 'Use ALL revealed letters in their correct position!';
-    setTimeout(() => {
-      message.textContent = '';
-      messageDisplay.style.display = 'none';
-    }, 3000);
+    hideModal();
     return;
   }
-  if (msg === 'clear') {
-    messageDisplay.style.display = 'none';
-    message.textContent = '';
+  if (msg === 'invalid') {
+    message.textContent = 'Invalid word!';
+    hideModal();
+    return;
+  }
+  if (msg === 'timeout') {
+    message.textContent = 'Timeout! Please try again.';
+    hideModal();
+    return;
+  }
+  if (msg === 'network') {
+    message.textContent = 'Connection error!';
+    hideModal();
+    return;
+  }
+  if (msg === 'word-check') {
+    message.textContent = 'Checking word...';
   }
 }
 
@@ -267,18 +274,27 @@ async function checkGuess() {
       return;
     }
   }
-  // Check guess is valid word
   // Use online dictionary API to validate word
   // --------------------------------
   wordCheckPending = true;
   showModalMessage('word-check');
-  const result = await validateWord(guess).catch((err) => console.log(err));
-  showModalMessage('clear');
+  const result = await validateWord(guess).catch((error) => {
+    console.log(error);
+    if (error.code === 'ERR_NETWORK') {
+      showModalMessage('network');
+    }
+    if (error.code === 'ECONNABORTED') {
+      showModalMessage('timeout');
+    }
+    if (error.code === 'ERR_BAD_REQUEST') {
+      showModalMessage('invalid');
+    }
+  });
   wordCheckPending = false;
   if (result === undefined) {
-    showModalMessage('invalid');
     return;
   }
+  showModalMessage('clear');
   // --------------------------------
   showCorrectTiles(guessArray);
   // Next guess
@@ -293,7 +309,14 @@ async function checkGuess() {
 }
 
 function handleKeyPress(key) {
-  if (isGameOver || wordCheckPending) return;
+  if (isGameOver) {
+    if (key === 'Enter') {
+      startNewGame();
+    }
+    return;
+  }
+  if (wordCheckPending) return;
+
   if (key === 'Backspace') {
     if (currentCol <= 0) return;
     currentCol -= 1;
