@@ -197,7 +197,9 @@ function showModalMessage(msg) {
     }, delay);
   };
   if (msg === 'clear') {
-    hideModal(0);
+    message.textContent = '';
+    messageDisplay.style.display = 'none';
+    return;
   }
   messageDisplay.style.display = 'flex';
 
@@ -298,7 +300,7 @@ async function checkGuess() {
   // --------------------------------
   showCorrectTiles(guessArray);
   // Next guess
-  if (currentRow < tileGridWidth) {
+  if (currentRow < tileGridHeight - 1) {
     currentRow += 1;
     currentCol = 0;
     return;
