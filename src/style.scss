@@ -99,6 +99,36 @@ body {
   font-size: math.div($grid-width, 10);
 }
 
+.tile-pop {
+  animation: tile-pop 0.3s cubic-bezier(0.17, 0.67, 0.68, 0.55) forwards;
+}
+
+@keyframes tile-pop {
+  50% {
+    color: map-get($map: $colors, $key: 'primary');
+    transform: scale(1.1);
+    border: 3px solid map-get($map: $colors, $key: 'grey');
+  }
+  100% {
+    color: map-get($map: $colors, $key: 'white');
+    transform: scale(1);
+    border: 1px solid map-get($map: $colors, $key: 'grey');
+  }
+}
+
+.tile-flip {
+  animation: tile-flip 0.3s ease-in-out forwards;
+}
+
+@keyframes tile-flip {
+  50% {
+    transform: rotate3d(0, 0, 90);
+  }
+  100% {
+    transform: rotate3d(0, 0, 0);
+  }
+}
+
 @media (min-width: 560px) {
   .navbar {
     width: $grid-width;

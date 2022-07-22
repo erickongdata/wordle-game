@@ -32,8 +32,8 @@ let tileGridArray = Array.from(Array(tileGridHeight), () =>
 let wordCheckPending = false;
 let isGameOver = false;
 let gameMode = 'easy';
-let gameModeChangeable = true;
-let gameQuittable = false;
+let isGameModeChangeable = true;
+let isGameQuittable = false;
 
 // In medium mode, keep track of revealed letters
 let revealedLetters = [];
@@ -159,7 +159,7 @@ function startNewGame() {
   answer = getWord(wordList);
   // Reinitialize
   isGameOver = false;
-  gameModeChangeable = true;
+  isGameModeChangeable = true;
   // medium mode
   revealedLetters = [];
   // hard mode
@@ -186,7 +186,7 @@ function showModalMessage(msg) {
   }
   if (msg === 'lose') {
     messageDisplay.style.display = 'flex';
-    message.textContent = `FAILED! It was "${answer.toUpperCase()}"`;
+    message.textContent = `YOU LOST! It was "${answer.toUpperCase()}"`;
     messageButton.style.display = 'block';
     messageButton.textContent = 'New game';
     messageButton.addEventListener('click', startNewGame);
@@ -275,10 +275,6 @@ async function checkGuess() {
 
 function handleKeyPress(key) {
   if (isGameOver || wordCheckPending) return;
-  // After first key press, gameMode is locked and game is quittable
-  if (gameModeChangeable) gameModeChangeable = false;
-  if (!gameQuittable) gameQuittable = true;
-
   if (key === 'Backspace') {
     if (currentCol <= 0) return;
     currentCol -= 1;
@@ -291,6 +287,9 @@ function handleKeyPress(key) {
   }
   if (key === 'Enter') {
     if (currentCol < tileGridWidth) return;
+    // After first try, gameMode is locked and game is quittable
+    if (isGameModeChangeable) isGameModeChangeable = false;
+    if (!isGameQuittable) isGameQuittable = true;
     checkGuess();
     return;
   }
@@ -301,6 +300,11 @@ function handleKeyPress(key) {
   currentTile.textContent = key;
   tileGridArray[currentRow][currentCol] = key; // update tileGridArray
   currentCol += 1;
+  // animation
+  currentTile.classList.add('tile-pop');
+  setTimeout(() => {
+    currentTile.classList.remove('tile-pop');
+  }, 300);
 }
 
 function processKeyInput(e) {
@@ -325,7 +329,7 @@ function activateKeyboardDisplay() {
 }
 
 function changeMode() {
-  if (!gameModeChangeable) return;
+  if (!isGameModeChangeable) return;
   if (gameMode === 'easy') {
     gameMode = 'medium';
     modeButton.textContent = 'Medium';
@@ -343,8 +347,8 @@ function changeMode() {
 }
 
 function quitGame() {
-  if (!gameQuittable) return;
-  gameQuittable = false;
+  if (!isGameQuittable) return;
+  isGameQuittable = false;
   showModalMessage('lose');
   isGameOver = true;
 }
