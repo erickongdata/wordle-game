@@ -20,8 +20,12 @@ const message = document.querySelector('[data-id="message"]');
 const messageWord = document.querySelector('[data-id="message-word"]');
 const messageButton = document.querySelector('[data-id="message-btn"]');
 
+const helpModal = document.querySelector('[data-id="help-container"]');
+
 const modeButton = document.querySelector('[data-id="mode-btn"]');
 const quitButton = document.querySelector('[data-id="quit-btn"]');
+const helpButton = document.querySelector('[data-id="help-btn"]');
+const helpCloseButton = document.querySelector('[data-id="help-close-btn"]');
 
 let currentRow = 0;
 let currentCol = 0;
@@ -37,6 +41,7 @@ let isGameOver = false;
 let gameMode = 'easy';
 let isGameModeChangeable = true;
 let isGameQuittable = false;
+let isKeysDisabled = false;
 
 // In medium mode, keep track of revealed letters
 let revealedLetters = [];
@@ -281,6 +286,7 @@ async function checkGuess() {
 }
 
 function handleKeyPress(key) {
+  if (isKeysDisabled) return;
   if (isGameOver) {
     if (key === 'Enter') {
       startNewGame();
@@ -367,9 +373,29 @@ function quitGame() {
   isGameOver = true;
 }
 
+function showHelpModal() {
+  isKeysDisabled = true;
+  helpModal.style.display = 'flex';
+}
+
+function hideHelpModal(e) {
+  e.stopPropagation();
+  const element = e.target.dataset.id;
+  if (element === 'help-close-btn' || element === 'help-container') {
+    isKeysDisabled = false;
+    helpModal.style.display = 'none';
+  }
+}
+
 function activateNavbarButtons() {
   modeButton.addEventListener('click', changeMode);
   quitButton.addEventListener('click', quitGame);
+  helpButton.addEventListener('click', showHelpModal);
+}
+
+function activateHelpModalButtons() {
+  helpCloseButton.addEventListener('click', (e) => hideHelpModal(e));
+  helpModal.addEventListener('click', (e) => hideHelpModal(e));
 }
 
 function initializeGame() {
@@ -378,6 +404,7 @@ function initializeGame() {
   activateKeyInput();
   activateKeyboardDisplay();
   activateNavbarButtons();
+  activateHelpModalButtons();
 }
 
 initializeGame();
