@@ -21,7 +21,12 @@ const messageWord = document.querySelector('[data-id="message-word"]');
 const messageButton = document.querySelector('[data-id="message-btn"]');
 
 const helpModal = document.querySelector('[data-id="help-container"]');
+const wordModal = document.querySelector('[data-id="word-container"]');
+const wordForm = document.querySelector('[data-id="word-form"]');
+const wordInput = document.querySelector('#word-input');
 
+const wordButton = document.querySelector('[data-id="custom-word-btn"]');
+const wordCloseButton = document.querySelector('[data-id="word-close-btn"]');
 const modeButton = document.querySelector('[data-id="mode-btn"]');
 const quitButton = document.querySelector('[data-id="quit-btn"]');
 const helpButton = document.querySelector('[data-id="help-btn"]');
@@ -42,6 +47,7 @@ let gameMode = 'easy';
 let isGameModeChangeable = true;
 let isGameQuittable = false;
 let isKeysDisabled = false;
+let isWordButtonEnabled = true;
 
 // In medium mode, keep track of revealed letters
 let revealedLetters = [];
@@ -54,8 +60,8 @@ function getWord(words) {
 }
 
 // Get a word from the wordList
-// let answer = getWord(wordList);
-let answer = 'scree';
+let answer = getWord(wordList);
+// let answer = 'scree';
 // console.log(answer);
 
 function showCorrectTiles(guessArray) {
@@ -158,6 +164,7 @@ function startNewGame() {
   // Reinitialize
   isGameOver = false;
   isGameModeChangeable = true;
+  isWordButtonEnabled = true;
   // medium mode
   revealedLetters = [];
   // hard mode
@@ -307,9 +314,10 @@ function handleKeyPress(key) {
   }
   if (key === 'Enter') {
     if (currentCol < tileGridWidth) return;
-    // After first try, gameMode is locked and game is quittable
+    // After first try, gameMode and wordButton is locked and game is quittable
     if (isGameModeChangeable) isGameModeChangeable = false;
     if (!isGameQuittable) isGameQuittable = true;
+    if (isWordButtonEnabled) isWordButtonEnabled = false;
     checkGuess();
     return;
   }
@@ -387,15 +395,39 @@ function hideHelpModal(e) {
   }
 }
 
+function showWordModal() {
+  if (!isWordButtonEnabled) return;
+  isKeysDisabled = true;
+  wordModal.style.display = 'flex';
+}
+
+function hideWordModal() {
+  isKeysDisabled = false;
+  wordModal.style.display = 'none';
+}
+
 function activateNavbarButtons() {
   modeButton.addEventListener('click', changeMode);
   quitButton.addEventListener('click', quitGame);
   helpButton.addEventListener('click', showHelpModal);
+  wordButton.addEventListener('click', showWordModal);
 }
 
 function activateHelpModalButtons() {
   helpCloseButton.addEventListener('click', (e) => hideHelpModal(e));
   helpModal.addEventListener('click', (e) => hideHelpModal(e));
+}
+
+function handleWordModalSubmit(e) {
+  e.preventDefault();
+  answer = wordInput.value.toLowerCase();
+  wordInput.value = '';
+  hideWordModal();
+}
+
+function activateWordModal() {
+  wordCloseButton.addEventListener('click', hideWordModal);
+  wordForm.addEventListener('submit', (e) => handleWordModalSubmit(e));
 }
 
 function initializeGame() {
@@ -405,6 +437,7 @@ function initializeGame() {
   activateKeyboardDisplay();
   activateNavbarButtons();
   activateHelpModalButtons();
+  activateWordModal();
 }
 
 initializeGame();
