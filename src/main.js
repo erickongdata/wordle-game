@@ -12,6 +12,8 @@ import {
   checkArrayContainsAllElements,
 } from './utilities/getUniqueArrayElements';
 import checkArrayElementPosition from './utilities/checkArrayElementPosition';
+import tileFlipAnimation from './animations/tileFlipAnimation';
+import showKeyboardKeyColor from './animations/showKeyboardKeyColor';
 
 const messageDisplay = document.querySelector('[data-id="message-container"]');
 const message = document.querySelector('[data-id="message"]');
@@ -50,38 +52,6 @@ function getWord(words) {
 // let answer = getWord(wordList);
 let answer = 'scree';
 // console.log(answer);
-
-function showKeyboardKeyColor(key, state) {
-  if (state === 'correct') {
-    key.classList.remove('present');
-    key.classList.add('correct');
-    return;
-  }
-  if (state === 'present') {
-    if (key.classList.contains('correct')) return;
-    key.classList.add('present');
-    return;
-  }
-  if (state === 'absent') {
-    if (key.classList.contains('correct') || key.classList.contains('present'))
-      return;
-    key.classList.add('absent');
-  }
-}
-
-function tileFlipAnimation(tile, index, state) {
-  const startDelay = (index + 1) * 100;
-  const duration = 400;
-  setTimeout(() => {
-    tile.classList.add('tile-flip');
-  }, startDelay); // start time
-  setTimeout(() => {
-    tile.classList.add(state); // change tile color
-  }, startDelay + duration * 0.5);
-  setTimeout(() => {
-    tile.classList.remove('tile-flip');
-  }, startDelay + duration);
-}
 
 function showCorrectTiles(guessArray) {
   // keep track of letter count in answer, e.g. queen => {q: 1, u: 1, e: 2, n: 1}
