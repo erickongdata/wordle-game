@@ -165,6 +165,7 @@ function startNewGame() {
   isGameOver = false;
   isGameModeChangeable = true;
   isWordButtonEnabled = true;
+  quitButton.style.display = 'none';
   // medium mode
   revealedLetters = [];
   // hard mode
@@ -205,17 +206,17 @@ function showModalMessage(msg) {
     return;
   }
   if (msg === 'hard') {
-    message.textContent = 'Use ALL revealed letters in their correct position!';
+    message.textContent = 'Use ALL revealed letters in their correct places!';
     hideModal();
     return;
   }
   if (msg === 'invalid') {
-    message.textContent = 'Invalid word!';
+    message.textContent = 'Word not valid';
     hideModal();
     return;
   }
   if (msg === 'timeout') {
-    message.textContent = 'Timeout! Please try again.';
+    message.textContent = 'Word check not done. Please try again.';
     hideModal();
     return;
   }
@@ -226,6 +227,19 @@ function showModalMessage(msg) {
   }
   if (msg === 'word-check') {
     message.textContent = 'Checking word...';
+  }
+}
+
+function handleWordCheckError(error) {
+  console.log(error);
+  if (error.code === 'ERR_NETWORK') {
+    showModalMessage('network');
+  }
+  if (error.code === 'ECONNABORTED') {
+    showModalMessage('timeout');
+  }
+  if (error.code === 'ERR_BAD_REQUEST') {
+    showModalMessage('invalid');
   }
 }
 
@@ -262,18 +276,7 @@ async function checkGuess() {
   // --------------------------------
   wordCheckPending = true;
   showModalMessage('word-check');
-  const result = await validateWord(guess).catch((error) => {
-    console.log(error);
-    if (error.code === 'ERR_NETWORK') {
-      showModalMessage('network');
-    }
-    if (error.code === 'ECONNABORTED') {
-      showModalMessage('timeout');
-    }
-    if (error.code === 'ERR_BAD_REQUEST') {
-      showModalMessage('invalid');
-    }
-  });
+  const result = await validateWord(guess).catch(handleWordCheckError);
   wordCheckPending = false;
   if (result === undefined) {
     return;
@@ -318,6 +321,7 @@ function handleKeyPress(key) {
     if (isGameModeChangeable) isGameModeChangeable = false;
     if (!isGameQuittable) isGameQuittable = true;
     if (isWordButtonEnabled) isWordButtonEnabled = false;
+    quitButton.style.display = 'initial';
     checkGuess();
     return;
   }
@@ -360,17 +364,17 @@ function changeMode() {
   if (!isGameModeChangeable) return;
   if (gameMode === 'easy') {
     gameMode = 'medium';
-    modeButton.textContent = 'Medium';
+    modeButton.innerText = '✭✭';
     return;
   }
   if (gameMode === 'medium') {
     gameMode = 'hard';
-    modeButton.textContent = 'Hard';
+    modeButton.innerText = '✭✭✭';
     return;
   }
   if (gameMode === 'hard') {
     gameMode = 'easy';
-    modeButton.textContent = 'Easy';
+    modeButton.innerText = '✭';
   }
 }
 

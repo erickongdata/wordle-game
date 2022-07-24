@@ -26,10 +26,10 @@
       </div>
       <div>
         <button type="button" class="nav-btn mode-btn" data-id="mode-btn">
-          Easy
+          ✭
         </button>
         <button type="button" class="nav-btn help-btn" data-id="help-btn">
-          Help
+          ?
         </button>
       </div>
     </nav>
@@ -44,37 +44,42 @@
           <p>At the start, type any valid five-letter word and press Enter.</p>
           <p>Revealed letters are colored based on how good the guess is.</p>
           <h2 class="help__tiles">
-            <span class="text text-secondary">S</span>
-            <span class="text text-primary">P</span>
-            <span class="text text-black">E</span>
-            <span class="text text-primary">A</span>
-            <span class="text text-black">K</span>
+            <span class="bg bg-secondary">S</span>
+            <span class="bg bg-primary">P</span>
+            <span class="bg bg-black">E</span>
+            <span class="bg bg-primary">A</span>
+            <span class="bg bg-black">K</span>
           </h2>
           <p>
-            The letter <span class="text text-secondary">S</span> is in the
-            right place.
+            The letter <span class="bg bg-secondary">S</span> is in the right
+            place.
           </p>
           <p>
-            Letters <span class="text text-primary">P</span> and
-            <span class="text text-primary">A</span> are in the wrong place.
+            Letters <span class="bg bg-primary">P</span> and
+            <span class="bg bg-primary">A</span> are in the wrong place.
           </p>
           <p>
-            Letters <span class="text text-black">E</span> and
-            <span class="text text-black">K</span> are not in the word.
+            Letters <span class="bg bg-black">E</span> and
+            <span class="bg bg-black">K</span> are not in the word.
           </p>
           <h3>Difficulty levels</h3>
           <p>
-            You can change the difficulty at the start of each game. Higher
-            levels add on more rules.
+            Click on <span class="text-outline">✭</span> at the top of the grid
+            to change the difficulty at the start of each game. Harder levels
+            add on more rules.
           </p>
-          <h4>Easy</h4>
-          <p>Each word must be valid.</p>
-          <h4>Medium</h4>
-          <p>Any revealed letters must be used in the next attempt.</p>
-          <h4>Hard</h4>
-          <p>
-            Any revealed correct letters must be used in their shown places.
-          </p>
+          <h4 class="help__stars">
+            <span><span class="text-outline">✭</span> Easy</span>
+          </h4>
+          <p>Each guess must be a valid word.</p>
+          <h4 class="help__stars">
+            <span><span class="text-outline">✭✭</span> Medium</span>
+          </h4>
+          <p>Any revealed letters must be used on the next try.</p>
+          <h4 class="help__stars">
+            <span class="text-outline">✭✭✭</span> Hard
+          </h4>
+          <p>Correct letters will be fixed on the next try.</p>
         </div>
       </div>
     </div>

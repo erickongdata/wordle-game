@@ -5,9 +5,10 @@ $secondary: hsl(95, 76%, 36%);
 $error: #d32752;
 $info: #f6c31c;
 
-$grid-width: 320px;
-$grid-height: 385px;
+$tile-width: 60px;
 $grid-gap: 5px;
+$grid-width: calc($tile-width * 5 + $grid-gap * 4);
+$grid-height: calc($tile-width * 6 + $grid-gap * 5);
 
 $key-gap: 2px;
 $key-width: min(50px, 8.5vw);
@@ -53,7 +54,7 @@ body {
   background-color: map-get($map: $colors, $key: 'dark');
 }
 
-.text {
+.bg {
   color: map-get($map: $colors, $key: 'white');
   padding: 0 0.25em;
 
@@ -66,6 +67,14 @@ body {
   &-black {
     background-color: map-get($map: $colors, $key: 'dark');
   }
+}
+
+.text-outline {
+  display: inline-block;
+  text-align: center;
+  border: 1px solid map-get($map: $colors, $key: 'light');
+  border-radius: $border-radius;
+  width: 6ch;
 }
 
 .game-title {
@@ -91,6 +100,11 @@ body {
   margin-bottom: 0.25rem;
   cursor: pointer;
   margin-inline: 0;
+  width: $tile-width;
+}
+
+.quit-btn {
+  display: none;
 }
 
 .grid-container {
@@ -302,12 +316,16 @@ body {
   }
 
   & h4 {
-    font-style: italic;
     font-size: 1.125rem;
-    margin-bottom: 0.5rem;
+    margin-bottom: 1rem;
   }
+
   & p {
     margin-bottom: 1rem;
+  }
+
+  &__stars {
+    margin-bottom: 0.5rem !important;
   }
 }
 
