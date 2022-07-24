@@ -399,11 +399,18 @@ function showWordModal() {
   if (!isWordButtonEnabled) return;
   isKeysDisabled = true;
   wordModal.style.display = 'flex';
+  setTimeout(() => {
+    wordInput.focus();
+  }, 200);
 }
 
-function hideWordModal() {
-  isKeysDisabled = false;
-  wordModal.style.display = 'none';
+function hideWordModal(e) {
+  e.stopPropagation();
+  const element = e.target.dataset.id;
+  if (element === 'word-close-btn' || element === 'word-container') {
+    isKeysDisabled = false;
+    wordModal.style.display = 'none';
+  }
 }
 
 function activateNavbarButtons() {
@@ -414,20 +421,22 @@ function activateNavbarButtons() {
 }
 
 function activateHelpModalButtons() {
-  helpCloseButton.addEventListener('click', (e) => hideHelpModal(e));
-  helpModal.addEventListener('click', (e) => hideHelpModal(e));
+  helpCloseButton.addEventListener('click', hideHelpModal);
+  helpModal.addEventListener('click', hideHelpModal);
 }
 
 function handleWordModalSubmit(e) {
   e.preventDefault();
   answer = wordInput.value.toLowerCase();
   wordInput.value = '';
-  hideWordModal();
+  isKeysDisabled = false;
+  wordModal.style.display = 'none';
 }
 
 function activateWordModal() {
   wordCloseButton.addEventListener('click', hideWordModal);
-  wordForm.addEventListener('submit', (e) => handleWordModalSubmit(e));
+  wordModal.addEventListener('click', hideWordModal);
+  wordForm.addEventListener('submit', handleWordModalSubmit);
 }
 
 function initializeGame() {

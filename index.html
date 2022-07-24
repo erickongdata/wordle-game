@@ -40,18 +40,27 @@
         </button>
         <div class="help__content">
           <h3>How to play</h3>
-          <h4>Guess the word in 6 attempts.</h4>
+          <h4>Guess the word in six attempts.</h4>
+          <p>At the start, type any valid five-letter word and press Enter.</p>
+          <p>Revealed letters are colored based on how good the guess is.</p>
+          <h2 class="help__tiles">
+            <span class="text text-secondary">S</span>
+            <span class="text text-primary">P</span>
+            <span class="text text-black">E</span>
+            <span class="text text-primary">A</span>
+            <span class="text text-black">K</span>
+          </h2>
           <p>
-            <span class="text text-secondary">GREEN</span> tiles are correct
-            letters.
+            The letter <span class="text text-secondary">S</span> is in the
+            right place.
           </p>
           <p>
-            <span class="text text-primary">YELLOW</span> tiles are letters in
-            the wrong place.
+            Letters <span class="text text-primary">P</span> and
+            <span class="text text-primary">A</span> are in the wrong place.
           </p>
           <p>
-            <span class="text text-black">DARK</span> tiles are letters that
-            aren't present.
+            Letters <span class="text text-black">E</span> and
+            <span class="text text-black">K</span> are not in the word.
           </p>
           <h3>Difficulty levels</h3>
           <p>
@@ -61,10 +70,10 @@
           <h4>Easy</h4>
           <p>Each word must be valid.</p>
           <h4>Medium</h4>
-          <p>All revealed letters must be used in the next attempt.</p>
+          <p>Any revealed letters must be used in the next attempt.</p>
           <h4>Hard</h4>
           <p>
-            All revealed correct letters must be used in their shown places.
+            Any revealed correct letters must be used in their shown places.
           </p>
         </div>
       </div>
@@ -76,7 +85,7 @@
         </button>
         <form data-id="word-form">
           <label for="word-input" class="word__label"
-            >Set a 5-letter word for a friend to solve</label
+            >Set a five-letter word for a friend to solve</label
           >
           <input
             id="word-input"
@@ -85,7 +94,7 @@
             maxlength="5"
             class="word__input"
             pattern="[a-zA-Z]+"
-            placeholder=". . . . ."
+            placeholder="_ _ _ _ _"
             autocomplete="off"
           />
         </form>
