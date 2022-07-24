@@ -100,7 +100,7 @@ body {
   margin-bottom: 0.25rem;
   cursor: pointer;
   margin-inline: 0;
-  width: $tile-width;
+  width: $tile-width * 0.8;
 }
 
 .quit-btn {
@@ -390,6 +390,10 @@ body {
 @media (min-width: 560px) {
   .navbar {
     width: $grid-width;
+  }
+
+  .nav-btn {
+    width: $tile-width;
   }
 
   .grid-container {

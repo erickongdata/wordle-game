@@ -429,12 +429,24 @@ function activateHelpModalButtons() {
   helpModal.addEventListener('click', hideHelpModal);
 }
 
-function handleWordModalSubmit(e) {
+async function handleWordModalSubmit(e) {
   e.preventDefault();
-  answer = wordInput.value.toLowerCase();
-  wordInput.value = '';
-  isKeysDisabled = false;
+  const customWord = wordInput.value.toLowerCase();
+
+  wordCheckPending = true;
   wordModal.style.display = 'none';
+  wordInput.value = '';
+  showModalMessage('word-check');
+  const result = await validateWord(customWord).catch(handleWordCheckError);
+  wordCheckPending = false;
+  if (result === undefined) {
+    isKeysDisabled = false;
+    return;
+  }
+  showModalMessage('clear');
+
+  answer = customWord;
+  isKeysDisabled = false;
 }
 
 function activateWordModal() {
