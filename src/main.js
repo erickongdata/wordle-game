@@ -187,7 +187,8 @@ function showModalMessage(msg) {
   messageDisplay.style.display = 'flex';
 
   if (msg === 'win') {
-    message.textContent = 'WINNER!';
+    message.textContent = '⭐ WINNER ⭐';
+    messageWord.textContent = answer.toUpperCase();
     messageButton.style.display = 'block';
     messageButton.textContent = 'New game';
     messageButton.addEventListener('click', startNewGame);
@@ -251,7 +252,9 @@ async function checkGuess() {
   // Correct answer
   if (guess === answer) {
     showCorrectTiles(guessArray);
-    showModalMessage('win');
+    setTimeout(() => {
+      showModalMessage('win');
+    }, 1500);
     isGameOver = true;
     return;
   }
@@ -291,7 +294,9 @@ async function checkGuess() {
     return;
   }
   // Out of guesses
-  showModalMessage('lose');
+  setTimeout(() => {
+    showModalMessage('lose');
+  }, 1500);
   isGameOver = true;
 }
 
