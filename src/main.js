@@ -172,6 +172,38 @@ function startNewGame() {
   revealedCorrectLetters = revealedCorrectLetters.map(() => '');
 }
 
+function updateStatistics(result) {
+  let gamesPlayed = +localStorage.getItem('gamesPlayed');
+  gamesPlayed += 1;
+  localStorage.setItem('gamesPlayed', gamesPlayed);
+  console.log(`gamesPlayed: ${gamesPlayed}`);
+
+  let gamesWon = +localStorage.getItem('gamesWon');
+  let currentStreak = +localStorage.getItem('currentStreak');
+  let bestStreak = +localStorage.getItem('bestStreak');
+  if (result === 'win') {
+    gamesWon += 1;
+    localStorage.setItem('gamesWon', gamesWon);
+    currentStreak += 1;
+    localStorage.setItem('currentStreak', currentStreak);
+    if (currentStreak > bestStreak) {
+      bestStreak = currentStreak;
+      localStorage.setItem('bestStreak', bestStreak);
+    }
+  }
+  if (result === 'lose') {
+    currentStreak = 0;
+    localStorage.setItem('currentStreak', currentStreak);
+  }
+  console.log(`gamesWon: ${gamesWon}`);
+  const percentageWon = Math.round((100 * gamesWon) / gamesPlayed);
+  console.log(`Percentage: ${percentageWon}%`);
+  console.log(`currentStreak: ${currentStreak}`);
+  console.log(`bestStreak: ${bestStreak}`);
+
+  console.log('------------------------------');
+}
+
 function showModalMessage(msg) {
   const hideModal = (delay = 3000) => {
     setTimeout(() => {
@@ -253,6 +285,7 @@ async function checkGuess() {
   if (guess === answer) {
     quitButton.style.display = 'none';
     showCorrectTiles(guessArray);
+    updateStatistics('win');
     setTimeout(() => {
       showModalMessage('win');
     }, 1500);
@@ -296,6 +329,7 @@ async function checkGuess() {
   }
   // Out of guesses
   quitButton.style.display = 'none';
+  updateStatistics('lose');
   setTimeout(() => {
     showModalMessage('lose');
   }, 1500);
@@ -391,6 +425,7 @@ function changeMode() {
 function quitGame() {
   if (!isGameQuittable) return;
   isGameQuittable = false;
+  updateStatistics('lose');
   showModalMessage('lose');
   isGameOver = true;
 }
@@ -465,6 +500,15 @@ function activateWordModal() {
   wordForm.addEventListener('submit', handleWordModalSubmit);
 }
 
+function initializeStatistics() {
+  const stats = ['gamesPlayed', 'gamesWon', 'currentStreak', 'bestStreak'];
+  stats.forEach((stat) => {
+    if (localStorage.getItem(stat) === null) {
+      localStorage.setItem(stat, 0);
+    }
+  });
+}
+
 function initializeGame() {
   createTileGridDisplay();
   createKeyboardDisplay();
@@ -473,6 +517,8 @@ function initializeGame() {
   activateNavbarButtons();
   activateHelpModalButtons();
   activateWordModal();
+  initializeStatistics();
 }
 
 initializeGame();
+console.log(localStorage.getItem('gamesPlayed'));
