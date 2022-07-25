@@ -4,7 +4,7 @@ async function validateWord(word) {
   const options = {
     method: 'GET',
     url: `https://api.dictionaryapi.dev/api/v2/entries/en/${word}`,
-    timeout: 10000,
+    timeout: 6000,
   };
 
   const response = await axios.request(options);

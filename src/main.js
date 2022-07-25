@@ -217,7 +217,7 @@ function showModalMessage(msg) {
     return;
   }
   if (msg === 'timeout') {
-    message.textContent = 'Word check not done. Please try again.';
+    message.textContent = 'Word check timeout. Please try again.';
     hideModal();
     return;
   }
@@ -251,6 +251,7 @@ async function checkGuess() {
   const guess = guessArrayL.join('');
   // Correct answer
   if (guess === answer) {
+    quitButton.style.display = 'none';
     showCorrectTiles(guessArray);
     setTimeout(() => {
       showModalMessage('win');
@@ -294,6 +295,7 @@ async function checkGuess() {
     return;
   }
   // Out of guesses
+  quitButton.style.display = 'none';
   setTimeout(() => {
     showModalMessage('lose');
   }, 1500);
@@ -305,6 +307,9 @@ function handleKeyPress(key) {
   if (isGameOver) {
     if (key === 'Enter') {
       startNewGame();
+    }
+    if (key === 'Backspace') {
+      showModalMessage('clear');
     }
     return;
   }
