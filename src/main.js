@@ -172,7 +172,7 @@ function startNewGame() {
   revealedCorrectLetters = revealedCorrectLetters.map(() => '');
 }
 
-function updateStatistics(result) {
+function updateStatistics(result, tryNum) {
   let gamesPlayed = +localStorage.getItem('gamesPlayed');
   gamesPlayed += 1;
   localStorage.setItem('gamesPlayed', gamesPlayed);
@@ -181,15 +181,28 @@ function updateStatistics(result) {
   let gamesWon = +localStorage.getItem('gamesWon');
   let currentStreak = +localStorage.getItem('currentStreak');
   let bestStreak = +localStorage.getItem('bestStreak');
+  let bestTry = +localStorage.getItem('bestTry');
+  const tryStats = JSON.parse(localStorage.getItem('tryStats'));
+
   if (result === 'win') {
+    // Games Won
     gamesWon += 1;
     localStorage.setItem('gamesWon', gamesWon);
+    // Streak handling
     currentStreak += 1;
     localStorage.setItem('currentStreak', currentStreak);
     if (currentStreak > bestStreak) {
       bestStreak = currentStreak;
       localStorage.setItem('bestStreak', bestStreak);
     }
+    // Best try handling
+    if (bestTry === 0 || tryNum < bestTry) {
+      bestTry = tryNum;
+      localStorage.setItem('bestTry', bestTry);
+    }
+    // Try stats handling
+    tryStats[tryNum] += 1;
+    localStorage.setItem('tryStats', JSON.stringify(tryStats));
   }
   if (result === 'lose') {
     currentStreak = 0;
@@ -200,7 +213,8 @@ function updateStatistics(result) {
   console.log(`Percentage: ${percentageWon}%`);
   console.log(`currentStreak: ${currentStreak}`);
   console.log(`bestStreak: ${bestStreak}`);
-
+  console.log(`bestTry: #${bestTry}`);
+  console.log(tryStats);
   console.log('------------------------------');
 }
 
@@ -285,7 +299,7 @@ async function checkGuess() {
   if (guess === answer) {
     quitButton.style.display = 'none';
     showCorrectTiles(guessArray);
-    updateStatistics('win');
+    updateStatistics('win', currentRow + 1);
     setTimeout(() => {
       showModalMessage('win');
     }, 1500);
@@ -329,7 +343,7 @@ async function checkGuess() {
   }
   // Out of guesses
   quitButton.style.display = 'none';
-  updateStatistics('lose');
+  updateStatistics('lose', currentRow + 1);
   setTimeout(() => {
     showModalMessage('lose');
   }, 1500);
@@ -425,7 +439,7 @@ function changeMode() {
 function quitGame() {
   if (!isGameQuittable) return;
   isGameQuittable = false;
-  updateStatistics('lose');
+  updateStatistics('lose', currentRow + 1);
   showModalMessage('lose');
   isGameOver = true;
 }
@@ -501,12 +515,31 @@ function activateWordModal() {
 }
 
 function initializeStatistics() {
-  const stats = ['gamesPlayed', 'gamesWon', 'currentStreak', 'bestStreak'];
+  const stats = [
+    'gamesPlayed',
+    'gamesWon',
+    'currentStreak',
+    'bestStreak',
+    'bestTry',
+  ];
+  const tryStats = JSON.stringify({
+    1: 0,
+    2: 0,
+    3: 0,
+    4: 0,
+    5: 0,
+    6: 0,
+  });
+
   stats.forEach((stat) => {
     if (localStorage.getItem(stat) === null) {
       localStorage.setItem(stat, 0);
     }
   });
+
+  if (localStorage.getItem('tryStats') === null) {
+    localStorage.setItem('tryStats', tryStats);
+  }
 }
 
 function initializeGame() {
@@ -521,4 +554,3 @@ function initializeGame() {
 }
 
 initializeGame();
-console.log(localStorage.getItem('gamesPlayed'));
