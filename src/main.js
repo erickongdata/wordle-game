@@ -23,7 +23,7 @@ const messageButton = document.querySelector('[data-id="message-btn"]');
 const helpModal = document.querySelector('[data-id="help-container"]');
 const wordModal = document.querySelector('[data-id="word-container"]');
 const wordForm = document.querySelector('[data-id="word-form"]');
-const wordInput = document.querySelector('#word-input');
+const wordInput = document.querySelector('[data-id="word-input"]');
 
 const wordButton = document.querySelector('[data-id="custom-word-btn"]');
 const wordCloseButton = document.querySelector('[data-id="word-close-btn"]');
