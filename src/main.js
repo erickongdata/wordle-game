@@ -420,6 +420,7 @@ function activateKeyboardDisplay() {
 
 function changeMode() {
   if (!isGameModeChangeable) return;
+  modeButton.blur();
   if (gameMode === 'easy') {
     gameMode = 'medium';
     modeButton.innerText = '✭✭';
