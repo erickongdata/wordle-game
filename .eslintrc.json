@@ -5,7 +5,8 @@
   },
   "extends": [
     "airbnb-base",
-    "prettier"
+    "prettier",
+    "plugin:cypress/recommended"
   ],
   "plugins": [
     "prettier"

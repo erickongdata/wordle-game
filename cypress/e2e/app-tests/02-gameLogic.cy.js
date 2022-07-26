@@ -123,7 +123,7 @@ describe('basic game logic check', () => {
     cy.get('[data-key="S"]').should('have.class', 'correct');
   });
 
-  it.only('correct/present tiles accumulate on next row', () => {
+  it('correct/present tiles accumulate on next row', () => {
     cy.get('[data-id="custom-word-btn"]').click();
     cy.get('[data-id="word-input"]').type('baker{enter}');
     cy.get('body').type('{b}{o}{o}{k}{s}{enter}');
