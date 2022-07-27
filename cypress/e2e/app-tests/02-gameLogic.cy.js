@@ -15,7 +15,7 @@ describe('basic game logic check', () => {
       .should('have.value', 'baker')
       .type('{enter}')
       .should('not.be.visible');
-    cy.get('body').type('b');
+    cy.get('body').type('{b}');
     cy.get('[data-id="tile-0-0"]').should('have.text', 'B');
     cy.get('body').type('{a}{k}{e}{r}{enter}');
     cy.get('[data-id="tile-0-0"]').should('have.class', 'correct');

@@ -17,6 +17,8 @@ $keyboard-width: calc($key-width * 10 + $key-gap * 2 * 11); // 544
 
 $modal-width: 200px;
 
+$stats-bars-width: 30px;
+
 $margin-base: 32px;
 $border-radius: 6px;
 
@@ -162,7 +164,6 @@ body {
 
 .quit-btn {
   display: none;
-  font-size: 1rem;
 }
 
 .grid-container {
@@ -536,17 +537,25 @@ body {
     }
   }
 
-  &__bar {
+  &__spread {
     display: flex;
+  }
+
+  &__labels {
+    width: $stats-bars-width;
 
     &-label {
-      width: 30px;
-      height: 30px;
+      width: $stats-bars-width;
+      height: $stats-bars-width;
       border: 1px solid map-get($map: $colors, $key: 'light-grey');
       display: flex;
       justify-content: center;
       align-items: center;
     }
+  }
+
+  &__bars {
+    width: calc(100% - $stats-bars-width);
 
     &-bar {
       display: flex;
@@ -554,7 +563,7 @@ body {
       align-items: center;
       padding-right: 0.5rem;
       width: 100%;
-      height: 30px;
+      height: $stats-bars-width;
       color: map-get($map: $colors, $key: 'black');
       background-color: map-get($map: $colors, $key: 'light-grey');
       border: 1px solid map-get($map: $colors, $key: 'dark');

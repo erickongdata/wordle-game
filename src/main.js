@@ -35,6 +35,32 @@ const helpCloseButton = document.querySelector('[data-id="help-close-btn"]');
 const statsButton = document.querySelector('[data-id="stats-btn"]');
 const statsCloseButton = document.querySelector('[data-id="stats-close-btn"]');
 
+const statsGamesPlayed = document.querySelector(
+  '[data-id="stats__gamesPlayed"]'
+);
+const statsPercentageWon = document.querySelector(
+  '[data-id="stats__percentageWon"]'
+);
+const statsCurrentStreak = document.querySelector(
+  '[data-id="stats__currentStreak"]'
+);
+const statsBestStreak = document.querySelector('[data-id="stats__bestStreak"]');
+const statsBar1 = document.querySelector('[data-id="stats-bar1"]');
+const statsBar2 = document.querySelector('[data-id="stats-bar2"]');
+const statsBar3 = document.querySelector('[data-id="stats-bar3"]');
+const statsBar4 = document.querySelector('[data-id="stats-bar4"]');
+const statsBar5 = document.querySelector('[data-id="stats-bar5"]');
+const statsBar6 = document.querySelector('[data-id="stats-bar6"]');
+// Stats bar-chart
+const statsBars = [
+  statsBar1,
+  statsBar2,
+  statsBar3,
+  statsBar4,
+  statsBar5,
+  statsBar6,
+];
+
 let currentRow = 0;
 let currentCol = 0;
 
@@ -176,8 +202,6 @@ function updateStatistics(result, tryNum) {
   let gamesPlayed = +localStorage.getItem('gamesPlayed');
   gamesPlayed += 1;
   localStorage.setItem('gamesPlayed', gamesPlayed);
-  console.log(`gamesPlayed: ${gamesPlayed}`);
-
   let gamesWon = +localStorage.getItem('gamesWon');
   let currentStreak = +localStorage.getItem('currentStreak');
   let bestStreak = +localStorage.getItem('bestStreak');
@@ -208,14 +232,6 @@ function updateStatistics(result, tryNum) {
     currentStreak = 0;
     localStorage.setItem('currentStreak', currentStreak);
   }
-  console.log(`gamesWon: ${gamesWon}`);
-  const percentageWon = Math.round((100 * gamesWon) / gamesPlayed);
-  console.log(`Percentage: ${percentageWon}%`);
-  console.log(`currentStreak: ${currentStreak}`);
-  console.log(`bestStreak: ${bestStreak}`);
-  console.log(`bestTry: #${bestTry}`);
-  console.log(tryStats);
-  console.log('------------------------------');
 }
 
 function showModalMessage(msg) {
@@ -460,6 +476,39 @@ function hideHelpModal(e) {
 }
 
 function showStatsModal() {
+  const gamesPlayed = +localStorage.getItem('gamesPlayed');
+  const gamesWon = +localStorage.getItem('gamesWon');
+  const currentStreak = +localStorage.getItem('currentStreak');
+  const bestStreak = +localStorage.getItem('bestStreak');
+  const tryStats = JSON.parse(localStorage.getItem('tryStats'));
+  const tryStatsMax = Math.max(...Object.values(tryStats));
+  const percentageWon =
+    gamesPlayed === 0 ? 0 : Math.round((100 * gamesWon) / gamesPlayed);
+
+  // Stats boxes summary
+  statsGamesPlayed.textContent = gamesPlayed;
+  statsPercentageWon.textContent = `${percentageWon}%`;
+  statsCurrentStreak.textContent = currentStreak;
+  statsBestStreak.textContent = bestStreak;
+
+  for (let i = 0; i < statsBars.length; i += 1) {
+    const games = tryStats[`${i + 1}`];
+    let percentage = tryStatsMax === 0 ? 0 : (100 * games) / tryStatsMax;
+    // hide bar if percentage = 0
+    if (percentage === 0) {
+      statsBars[i].textContent = '';
+      statsBars[i].style.paddingRight = '0';
+    } else {
+      statsBars[i].textContent = games;
+      statsBars[i].style.paddingRight = '0.5rem';
+    }
+    // minimum bar length is 5%
+    if (percentage > 0 && percentage < 5) {
+      percentage = 5;
+    }
+    statsBars[i].style.width = `${percentage}%`;
+  }
+
   isKeysDisabled = true;
   statsModal.style.display = 'flex';
 }
