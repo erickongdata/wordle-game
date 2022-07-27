@@ -21,6 +21,7 @@ const messageWord = document.querySelector('[data-id="message-word"]');
 const messageButton = document.querySelector('[data-id="message-btn"]');
 
 const helpModal = document.querySelector('[data-id="help-container"]');
+const statsModal = document.querySelector('[data-id="stats-container"]');
 const wordModal = document.querySelector('[data-id="word-container"]');
 const wordForm = document.querySelector('[data-id="word-form"]');
 const wordInput = document.querySelector('[data-id="word-input"]');
@@ -31,6 +32,8 @@ const modeButton = document.querySelector('[data-id="mode-btn"]');
 const quitButton = document.querySelector('[data-id="quit-btn"]');
 const helpButton = document.querySelector('[data-id="help-btn"]');
 const helpCloseButton = document.querySelector('[data-id="help-close-btn"]');
+const statsButton = document.querySelector('[data-id="stats-btn"]');
+const statsCloseButton = document.querySelector('[data-id="stats-close-btn"]');
 
 let currentRow = 0;
 let currentCol = 0;
@@ -59,10 +62,7 @@ function getWord(words) {
   return words[Math.floor(Math.random() * words.length)];
 }
 
-// Get a word from the wordList
 let answer = getWord(wordList);
-// let answer = 'scree';
-// console.log(answer);
 
 function showCorrectTiles(guessArray) {
   // keep track of letter count in answer, e.g. queen => {q: 1, u: 1, e: 2, n: 1}
@@ -459,6 +459,20 @@ function hideHelpModal(e) {
   }
 }
 
+function showStatsModal() {
+  isKeysDisabled = true;
+  statsModal.style.display = 'flex';
+}
+
+function hideStatsModal(e) {
+  e.stopPropagation();
+  const element = e.target.dataset.id;
+  if (element === 'stats-close-btn' || element === 'stats-container') {
+    isKeysDisabled = false;
+    statsModal.style.display = 'none';
+  }
+}
+
 function showWordModal() {
   if (!isWordButtonEnabled) return;
   isKeysDisabled = true;
@@ -482,11 +496,17 @@ function activateNavbarButtons() {
   quitButton.addEventListener('click', quitGame);
   helpButton.addEventListener('click', showHelpModal);
   wordButton.addEventListener('click', showWordModal);
+  statsButton.addEventListener('click', showStatsModal);
 }
 
 function activateHelpModalButtons() {
   helpCloseButton.addEventListener('click', hideHelpModal);
   helpModal.addEventListener('click', hideHelpModal);
+}
+
+function activateStatsModalButtons() {
+  statsCloseButton.addEventListener('click', hideStatsModal);
+  statsModal.addEventListener('click', hideStatsModal);
 }
 
 async function handleWordModalSubmit(e) {
@@ -551,6 +571,7 @@ function initializeGame() {
   activateNavbarButtons();
   activateHelpModalButtons();
   activateWordModal();
+  activateStatsModalButtons();
   initializeStatistics();
 }
 
