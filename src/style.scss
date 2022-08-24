@@ -22,6 +22,10 @@ $stats-bars-width: 30px;
 $margin-base: 32px;
 $border-radius: 6px;
 
+$switch-height: 24px;
+$switch-width: calc($switch-height * 1.76);
+$switch-transition: 0.4s;
+
 $colors: (
   'primary': $primary,
   'secondary': $secondary,
@@ -124,47 +128,48 @@ body {
 }
 
 .navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+}
+
+.nav-container {
   display: flex;
   justify-content: space-between;
   align-items: end;
   margin-inline: auto;
-  width: calc($grid-width * 0.8);
-
-  @include sm {
-    width: $grid-width;
-  }
+  width: $keyboard-width;
 }
 
 .nav-btns {
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: $grid-gap;
 }
 
 .nav-btn {
   font-size: 1.25rem;
   color: map-get($map: $colors, $key: 'light-grey');
-  background-color: map-get($map: $colors, $key: 'dark');
-  border-radius: $border-radius;
-  border: 1px solid map-get($map: $colors, $key: 'grey');
+  background-color: transparent;
+  border: none;
   margin-bottom: 0.25rem;
   cursor: pointer;
-  width: $tile-width * 0.8;
-  height: $tile-width * 0.5;
+  width: calc($tile-width * 0.5);
+  height: calc($tile-width * 0.5);
 
   @include sm {
-    width: $tile-width;
+    font-size: 1.5rem;
+    width: calc($tile-width * 0.8);
+    height: calc($tile-width * 0.5);
   }
-}
-
-.mode-btn {
-  font-size: 1rem;
 }
 
 .quit-btn {
   display: none;
 }
+
+// --------------------------------------------------------
 
 .grid-container {
   width: calc($grid-width * 0.8);
@@ -226,6 +231,8 @@ body {
   }
 }
 
+// --------------------------------------------------------
+
 .keyboard-container {
   display: flex;
   justify-content: center;
@@ -276,6 +283,8 @@ body {
   border-color: map-get($map: $colors, $key: 'dark-grey');
   background-color: map-get($map: $colors, $key: 'dark-grey');
 }
+
+// --------------------------------------------------------
 
 .message-container {
   display: none;
@@ -338,6 +347,8 @@ body {
   }
 }
 
+// --------------------------------------------------------
+
 .help-container {
   position: fixed;
   display: none;
@@ -396,6 +407,8 @@ body {
     margin-bottom: 0.5rem !important;
   }
 }
+
+// --------------------------------------------------------
 
 .word-container {
   display: none;
@@ -459,6 +472,8 @@ body {
     cursor: pointer;
   }
 }
+
+// --------------------------------------------------------
 
 .stats-container {
   position: fixed;
@@ -570,3 +585,120 @@ body {
     }
   }
 }
+
+// --------------------------------------------------------
+
+.settings-container {
+  position: fixed;
+  display: none;
+  justify-content: center;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  overflow: scroll;
+  padding-inline: 2vw;
+}
+
+.settings {
+  position: relative;
+  width: $keyboard-width;
+  margin-bottom: auto;
+  margin-top: calc(45px + 29px);
+  border: 1px solid map-get($map: $colors, $key: 'light-grey');
+  background-color: map-get($map: $colors, $key: 'dark-grey');
+  padding: 1rem 2rem;
+  border-radius: $border-radius;
+
+  background-color: map-get($map: $colors, $key: 'dark-grey');
+  border: 1px solid map-get($map: $colors, $key: 'light');
+  border-radius: $border-radius;
+  box-shadow: 0 0 10px map-get($map: $colors, $key: 'black');
+
+  padding-top: 1.5rem;
+  padding-bottom: 1rem;
+  padding-inline: 2rem;
+
+  & h3 {
+    color: map-get($map: $colors, $key: 'secondary');
+    margin-bottom: 0.5rem;
+  }
+
+  &__close-btn {
+    background-color: transparent;
+    color: map-get($map: $colors, $key: 'light');
+    border: none;
+    position: absolute;
+    font-size: 2rem;
+    right: 0.5rem;
+    top: 0rem;
+    cursor: pointer;
+  }
+
+  &-btns {
+    margin-bottom: 1rem;
+  }
+}
+
+// --------------------------------------------------------
+
+.switch {
+  position: relative;
+  display: inline-block;
+  width: $switch-width;
+  height: $switch-height;
+
+  &-container {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1rem;
+  }
+
+  &-checkbox {
+    opacity: 0;
+    width: 0;
+    height: 0;
+
+    &--mode:checked + .switch-slider--mode {
+      background-color: map-get($map: $colors, $key: 'secondary');
+    }
+
+    &--mode:checked + .switch-slider--mode:before {
+      transform: translateX(calc($switch-height * 0.8));
+    }
+
+    // &--color:checked + .switch-slider--color {
+    //   background-color: map-get($map: $colors, $key: 'secondary');
+    // }
+
+    // &--color:checked + .switch-slider--color:before {
+    //   transform: translateX(calc($switch-height * 0.8));
+    // }
+  }
+
+  &-slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: map-get($map: $colors, $key: 'light-grey');
+    transition: $switch-transition;
+    border-radius: $switch-height;
+
+    &:before {
+      position: absolute;
+      content: '';
+      height: calc($switch-height * 0.8);
+      width: calc($switch-height * 0.8);
+      left: calc($switch-height * 0.1);
+      bottom: calc($switch-height * 0.1);
+      background-color: map-get($map: $colors, $key: 'white');
+      transition: $switch-transition;
+      border-radius: 50%;
+    }
+  }
+}
+// --------------------------------------------------------

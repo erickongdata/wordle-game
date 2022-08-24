@@ -25,9 +25,14 @@ const statsModal = document.querySelector('[data-id="stats-container"]');
 const wordModal = document.querySelector('[data-id="word-container"]');
 const wordForm = document.querySelector('[data-id="word-form"]');
 const wordInput = document.querySelector('[data-id="word-input"]');
+const settingsModal = document.querySelector('[data-id="settings-container"]');
 
 const wordButton = document.querySelector('[data-id="custom-word-btn"]');
 const wordCloseButton = document.querySelector('[data-id="word-close-btn"]');
+const settingsButton = document.querySelector('[data-id="settings-btn"]');
+const settingsCloseButton = document.querySelector(
+  '[data-id="settings-close-btn"]'
+);
 const modeButton = document.querySelector('[data-id="mode-btn"]');
 const quitButton = document.querySelector('[data-id="quit-btn"]');
 const helpButton = document.querySelector('[data-id="help-btn"]');
@@ -77,6 +82,10 @@ let isGameModeChangeable = true;
 let isGameQuittable = false;
 let isKeysDisabled = false;
 let isWordButtonEnabled = true;
+
+// Easy - Each guess must be a valid word.
+// Medium - Any revealed letters must be used on the next try.
+// Hard - Correct letters will be fixed on the next try.
 
 // In medium mode, keep track of revealed letters
 let revealedLetters = [];
@@ -434,23 +443,16 @@ function activateKeyboardDisplay() {
   );
 }
 
-function changeMode() {
+function changeMode(e) {
+  const isHardMode = e.target.checked;
   if (!isGameModeChangeable) return;
-  modeButton.blur();
-  if (gameMode === 'easy') {
-    gameMode = 'medium';
-    modeButton.innerText = '✭✭';
-    return;
-  }
-  if (gameMode === 'medium') {
+  if (isHardMode) {
     gameMode = 'hard';
-    modeButton.innerText = '✭✭✭';
+    localStorage.setItem('mode', 'hard');
     return;
   }
-  if (gameMode === 'hard') {
-    gameMode = 'easy';
-    modeButton.innerText = '✭';
-  }
+  gameMode = 'easy';
+  localStorage.setItem('mode', 'easy');
 }
 
 function quitGame() {
@@ -540,8 +542,22 @@ function hideWordModal(e) {
   }
 }
 
+function showSettingsModal() {
+  isKeysDisabled = true;
+  settingsModal.style.display = 'flex';
+}
+
+function hideSettingsModal(e) {
+  e.stopPropagation();
+  const element = e.target.dataset.id;
+  if (element === 'settings-close-btn' || element === 'settings-container') {
+    isKeysDisabled = false;
+    settingsModal.style.display = 'none';
+  }
+}
+
 function activateNavbarButtons() {
-  modeButton.addEventListener('click', changeMode);
+  settingsButton.addEventListener('click', showSettingsModal);
   quitButton.addEventListener('click', quitGame);
   helpButton.addEventListener('click', showHelpModal);
   wordButton.addEventListener('click', showWordModal);
@@ -578,10 +594,29 @@ async function handleWordModalSubmit(e) {
   isKeysDisabled = false;
 }
 
-function activateWordModal() {
+function activateWordModalButtons() {
   wordCloseButton.addEventListener('click', hideWordModal);
   wordModal.addEventListener('click', hideWordModal);
   wordForm.addEventListener('submit', handleWordModalSubmit);
+}
+
+function activateSettingsModalButtons() {
+  settingsCloseButton.addEventListener('click', hideSettingsModal);
+  settingsModal.addEventListener('click', hideSettingsModal);
+  modeButton.addEventListener('change', changeMode);
+}
+
+function initializeSettings() {
+  // Difficulty mode
+  if (localStorage.getItem('mode') === null) {
+    localStorage.setItem('mode', 'easy');
+  }
+  gameMode = localStorage.getItem('mode');
+  if (gameMode === 'easy') {
+    modeButton.checked = false;
+  } else {
+    modeButton.checked = true;
+  }
 }
 
 function initializeStatistics() {
@@ -619,8 +654,10 @@ function initializeGame() {
   activateKeyboardDisplay();
   activateNavbarButtons();
   activateHelpModalButtons();
-  activateWordModal();
+  activateWordModalButtons();
   activateStatsModalButtons();
+  activateSettingsModalButtons();
+  initializeSettings();
   initializeStatistics();
 }
 

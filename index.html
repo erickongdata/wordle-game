@@ -16,54 +16,56 @@
       <h1>Wordle</h1>
     </div>
     <nav class="navbar">
-      <div class="nav-btns">
-        <button
-          type="button"
-          class="nav-btn custom-word-btn material-symbols-outlined"
-          data-id="custom-word-btn"
-          title="word"
-          aria-label="word"
-        >
-          key
-        </button>
-        <button
-          type="button"
-          class="nav-btn stats-btn material-symbols-outlined"
-          data-id="stats-btn"
-          title="stats"
-          aria-label="stats"
-        >
-          bar_chart
-        </button>
-      </div>
-      <button
-        type="button"
-        class="nav-btn quit-btn material-symbols-outlined"
-        data-id="quit-btn"
-        title="quit"
-        aria-label="quit"
-      >
-        logout
-      </button>
-      <div class="nav-btns">
-        <button
-          type="button"
-          class="nav-btn mode-btn"
-          data-id="mode-btn"
-          title="difficulty"
-          aria-label="difficulty"
-        >
-          ✭
-        </button>
-        <button
-          type="button"
-          class="nav-btn help-btn material-symbols-outlined"
-          data-id="help-btn"
-          title="help"
-          aria-label="help"
-        >
-          question_mark
-        </button>
+      <div class="nav-container">
+        <div class="nav-btns">
+          <button
+            type="button"
+            class="nav-btn custom-word-btn material-symbols-outlined"
+            data-id="custom-word-btn"
+            title="word"
+            aria-label="word"
+          >
+            key
+          </button>
+          <button
+            type="button"
+            class="nav-btn stats-btn material-symbols-outlined"
+            data-id="stats-btn"
+            title="stats"
+            aria-label="stats"
+          >
+            bar_chart
+          </button>
+        </div>
+        <div class="nav-btns">
+          <button
+            type="button"
+            class="nav-btn quit-btn material-symbols-outlined"
+            data-id="quit-btn"
+            title="quit"
+            aria-label="quit"
+          >
+            logout
+          </button>
+          <button
+            type="button"
+            class="nav-btn settings-btn material-symbols-outlined"
+            data-id="settings-btn"
+            title="settings"
+            aria-label="settings"
+          >
+            settings
+          </button>
+          <button
+            type="button"
+            class="nav-btn help-btn material-symbols-outlined"
+            data-id="help-btn"
+            title="help"
+            aria-label="help"
+          >
+            question_mark
+          </button>
+        </div>
       </div>
     </nav>
     <div class="help-container" data-id="help-container">
@@ -95,25 +97,41 @@
             Letters <span class="bg bg-black">E</span> and
             <span class="bg bg-black">K</span> are not in the word.
           </p>
-          <h3>Difficulty levels</h3>
-          <p>
-            Click on <span class="text-outline">✭</span> at the top of the grid
-            to change the difficulty at the start of each game. Harder levels
-            add on more rules.
-          </p>
-          <h4 class="help__stars">
-            <span><span class="text-outline">✭</span> Easy</span>
-          </h4>
-          <p>Each guess must be a valid word.</p>
-          <h4 class="help__stars">
-            <span><span class="text-outline">✭✭</span> Medium</span>
-          </h4>
-          <p>Any revealed letters must be used on the next try.</p>
-          <h4 class="help__stars">
-            <span class="text-outline">✭✭✭</span> Hard
-          </h4>
-          <p>Correct letters will be fixed on the next try.</p>
         </div>
+      </div>
+    </div>
+    <div class="settings-container" data-id="settings-container">
+      <div class="settings">
+        <button
+          type="button"
+          class="settings__close-btn"
+          data-id="settings-close-btn"
+        >
+          &times;
+        </button>
+        <div class="switch-container">
+          <label class="switch switch--mode">
+            <input
+              type="checkbox"
+              class="switch-checkbox switch-checkbox--mode"
+              data-id="mode-btn"
+            />
+            <span class="switch-slider switch-slider--mode"></span>
+          </label>
+          <div>
+            <h3>Hard mode</h3>
+            <p>Any revealed letters must be used on the next try.</p>
+          </div>
+        </div>
+        <!-- <div class="switch-container">
+          <label class="switch switch--color">
+            <input
+              type="checkbox"
+              class="switch-checkbox switch-checkbox--color"
+            />
+            <span class="switch-slider switch-slider--color"></span>
+          </label>
+        </div> -->
       </div>
     </div>
     <div class="word-container" data-id="word-container">
