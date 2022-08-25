@@ -1,6 +1,6 @@
-# Wordle App
+# Wordle Game
 
-A Wordle game clone created with Javascript/HTML/CSS.
+A Wordle game clone created with Javascript/HTML/CSS and Vite.
 
 Developed and tested with Cypress.
 
@@ -10,6 +10,18 @@ Features:
 - Statistics for games played.
 - Hard difficulty mode.
 - Words are checked with online dictionary.
+
+To run the app in development mode:
+
+```
+npx vite
+```
+
+To build the app for production:
+
+```
+npx vite build
+```
 
 ![alt text](./screenshots/wordle_01.jpeg)
 
