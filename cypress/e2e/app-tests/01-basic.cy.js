@@ -57,17 +57,12 @@ describe('menu buttons work', () => {
     cy.get('[data-id="help-container"]').should('not.be.visible');
   });
 
-  it('mode button works', () => {
-    cy.get('[data-id="mode-btn"]').should('contain.text', '✭');
-    cy.get('[data-id="mode-btn"]').should('not.contain.text', '✭✭');
-    cy.get('[data-id="mode-btn"]').click();
-    cy.get('[data-id="mode-btn"]').should('contain.text', '✭✭');
-    cy.get('[data-id="mode-btn"]').should('not.contain.text', '✭✭✭');
-    cy.get('[data-id="mode-btn"]').click();
-    cy.get('[data-id="mode-btn"]').should('contain.text', '✭✭✭');
-    cy.get('[data-id="mode-btn"]').click();
-    cy.get('[data-id="mode-btn"]').should('contain.text', '✭');
-    cy.get('[data-id="mode-btn"]').should('not.contain.text', '✭✭');
+  it('settings button works', () => {
+    cy.get('[data-id="settings-container"]').should('not.be.visible');
+    cy.get('[data-id="settings-btn"]').click();
+    cy.get('[data-id="settings-container"]').should('be.visible');
+    cy.get('[data-id="settings-close-btn"]').click();
+    cy.get('[data-id="settings-container"]').should('not.be.visible');
   });
 });
 
