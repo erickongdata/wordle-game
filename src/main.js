@@ -33,7 +33,7 @@ const settingsButton = document.querySelector('[data-id="settings-btn"]');
 const settingsCloseButton = document.querySelector(
   '[data-id="settings-close-btn"]'
 );
-const modeButton = document.querySelector('[data-id="mode-btn"]');
+const modeButton = document.querySelector('[data-id="mode-btn"]'); // Difficulty level
 const quitButton = document.querySelector('[data-id="quit-btn"]');
 const helpButton = document.querySelector('[data-id="help-btn"]');
 const helpCloseButton = document.querySelector('[data-id="help-close-btn"]');
@@ -77,15 +77,18 @@ let tileGridArray = Array.from(Array(tileGridHeight), () =>
 
 let wordCheckPending = false;
 let isGameOver = false;
-let gameMode = 'easy';
-let isGameModeChangeable = true;
-let isGameQuittable = false;
 let isKeysDisabled = false;
 let isWordButtonEnabled = true;
+let gameMode = 'easy';
 
+// Difficulty levels
+// Higher levels include more rules
+// ----------------------------------------------
 // Easy - Each guess must be a valid word.
 // Medium - Any revealed letters must be used on the next try.
 // Hard - Correct letters will be fixed on the next try.
+
+// Note: only Easy and Hard level available in game.
 
 // In medium mode, keep track of revealed letters
 let revealedLetters = [];
@@ -198,9 +201,9 @@ function startNewGame() {
   answer = getWord(wordList);
   // Reinitialize
   isGameOver = false;
-  isGameModeChangeable = true;
   isWordButtonEnabled = true;
   quitButton.style.display = 'none';
+  modeButton.disabled = false;
   // medium mode
   revealedLetters = [];
   // hard mode
@@ -401,10 +404,9 @@ function handleKeyPress(key) {
   if (key === 'Enter') {
     if (currentCol < tileGridWidth) return;
     // After first try, gameMode and wordButton is locked and game is quittable
-    if (isGameModeChangeable) isGameModeChangeable = false;
-    if (!isGameQuittable) isGameQuittable = true;
-    if (isWordButtonEnabled) isWordButtonEnabled = false;
+    modeButton.disabled = true;
     quitButton.style.display = 'initial';
+    if (isWordButtonEnabled) isWordButtonEnabled = false;
     checkGuess();
     return;
   }
@@ -445,7 +447,6 @@ function activateKeyboardDisplay() {
 
 function changeMode(e) {
   const isHardMode = e.target.checked;
-  if (!isGameModeChangeable) return;
   if (isHardMode) {
     gameMode = 'hard';
     localStorage.setItem('mode', 'hard');
@@ -456,8 +457,6 @@ function changeMode(e) {
 }
 
 function quitGame() {
-  if (!isGameQuittable) return;
-  isGameQuittable = false;
   updateStatistics('lose', currentRow + 1);
   showModalMessage('lose');
   isGameOver = true;

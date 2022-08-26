@@ -668,6 +668,10 @@ body {
       transform: translateX(calc($switch-height * 0.8));
     }
 
+    &--mode:disabled + .switch-slider--mode {
+      opacity: 0.5;
+    }
+
     // &--color:checked + .switch-slider--color {
     //   background-color: map-get($map: $colors, $key: 'secondary');
     // }

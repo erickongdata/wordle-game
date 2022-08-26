@@ -9,7 +9,7 @@ Features:
 - Challenge a friend with your own 5-letter word.
 - Statistics for games played.
 - Hard difficulty mode.
-- Words are checked with online dictionary.
+- Words are checked with an online dictionary.
 
 To run the app in development mode:
 
@@ -23,8 +23,8 @@ To build the app for production:
 npx vite build
 ```
 
-![alt text](./screenshots/wordle_01.jpeg)
+![](./screenshots/wordle_01.jpeg)
 
-![alt text](./screenshots/wordle_02.jpeg)
+![](./screenshots/wordle_02.jpeg)
 
-![alt text](./screenshots/wordle_03.jpeg)
+![](./screenshots/wordle_03.jpeg)
