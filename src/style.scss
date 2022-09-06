@@ -121,12 +121,6 @@ body {
   width: 6ch;
 }
 
-.game-title {
-  color: map-get($map: $colors, $key: 'light-grey');
-  text-align: center;
-  margin-bottom: calc($margin-base * 0.25);
-}
-
 .navbar {
   position: fixed;
   top: 0;
@@ -180,6 +174,7 @@ body {
   gap: $grid-gap;
   margin-inline: auto;
   margin-bottom: calc($margin-base * 0.5);
+  margin-top: calc($margin-base * 1.5);
 
   @include sm {
     width: $grid-width;

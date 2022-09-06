@@ -23,8 +23,14 @@ To build the app for production:
 npx vite build
 ```
 
-![](./screenshots/wordle_01.jpeg)
+To run Cypress test app
 
-![](./screenshots/wordle_02.jpeg)
+```
+npx cypress open
+```
 
-![](./screenshots/wordle_03.jpeg)
+![](./screenshots/01.jpeg)
+
+![](./screenshots/02.jpeg)
+
+![](./screenshots/03.jpeg)
