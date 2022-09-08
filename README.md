@@ -1,15 +1,16 @@
 # Wordle Game
 
-A Wordle game clone created with Javascript/HTML/CSS and Vite.
+A Wordle game clone created with Javascript/HTML/CSS(SASS) and Vite.
 
-Developed and tested with Cypress.
+Developed and end-to-end tested with Cypress.
 
 Features:
 
 - Challenge a friend with your own 5-letter word.
 - Statistics for games played.
-- Hard difficulty mode.
-- Words are checked with an online dictionary.
+- Normal and Hard difficulty modes.
+- The word is randomly chosen from a list of 2309 selected words.
+- Guesses are checked with an online dictionary API at endpoint: https://api.dictionaryapi.dev/api/v2/entries/en/
 
 To run the app in development mode:
 
